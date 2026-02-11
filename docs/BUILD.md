@@ -69,7 +69,7 @@ python -m mpremote connect COM5 resume exec "import _uzigbee,uzigbee; print(_uzi
 
 ## 6. CI Artifacts
 
-- Workflow: `.github/workflows/firmware-artifacts.yml`
+- Workflow template (needs `workflow` token scope when enabling): `.github/workflows-disabled/firmware-artifacts.yml`
 - Local packager:
 
 ```bash

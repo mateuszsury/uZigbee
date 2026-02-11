@@ -1,7 +1,8 @@
 site_name: uzigbee
 site_description: MicroPython Zigbee library for ESP32-C6
-site_url: https://example.invalid/uzigbee
-repo_name: uzigbee
+site_url: https://mateuszsury.github.io/MicroPythonZigbee/
+repo_name: mateuszsury/MicroPythonZigbee
+repo_url: https://github.com/mateuszsury/MicroPythonZigbee
 docs_dir: docs
 
 theme:
