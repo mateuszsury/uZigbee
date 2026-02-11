@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>uZigbee Coordinator - NeoPixel Control</title>
+  <style>
+    :root {
+      --bg: #0f1720;
+      --panel: #182331;
+      --panel2: #202f42;
+      --txt: #e9f0f8;
+      --muted: #9fb2c6;
+      --ok: #1cc785;
+      --warn: #f4b400;
+      --bad: #ff5d73;
+      --line: #2b4058;
+      --btn: #2b79c2;
+      --btn2: #375a7b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      background: radial-gradient(circle at top right, #1d3048, var(--bg) 60%);
+      color: var(--txt);
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+    }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 8px 0;
+    }
+    label { color: var(--muted); font-size: 13px; }
+    input, button {
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      font-size: 14px;
+      background: #0f1b29;
+      color: var(--txt);
+    }
+    input[type="range"] { width: 100%; padding: 0; }
+    input[type="color"] { width: 64px; height: 40px; padding: 4px; }
+    button {
+      background: var(--btn);
+      cursor: pointer;
+      min-width: 84px;
+    }
+    button.alt { background: var(--btn2); }
+    button.on { background: #1f8d5b; }
+    button.off { background: #8f2f45; }
+    pre {
+      margin: 0;
+      max-height: 220px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0b1520;
+      padding: 10px;
+      color: #cfe0f1;
+      font-size: 12px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .status-ok { color: var(--ok); }
+    .status-bad { color: var(--bad); }
+    .status-warn { color: var(--warn); }
+  </style>
+</head>
+<body>
+  <h1>uZigbee Coordinator - Color Control (Router NeoPixel)</h1>
+  <div class="muted">Sterowanie routerem (light/color clusters) przez high-level API koordynatora.</div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Network</h3>
+      <div class="row">
+        <label>Permit join [s]</label>
+        <input id="permitSec" type="number" min="1" max="255" value="120">
+        <button class="alt" onclick="permitJoin()">Permit</button>
+        <button class="alt" onclick="discoverQueue()">Discover</button>
+        <button class="alt" onclick="probe()">Probe</button>
+      </div>
+      <div class="row">
+        <label>Target short</label>
+        <input id="targetAddr" type="text" placeholder="0x1234">
+        <label>Selector</label>
+        <input id="targetIdx" type="number" min="1" value="1">
+        <button class="alt" onclick="setTarget()">Set Target</button>
+      </div>
+      <div class="row">
+        <strong id="onlineState" class="status-warn">status: unknown</strong>
+      </div>
+      <pre id="statusBox">loading...</pre>
+    </div>
+
+    <div class="card">
+      <h3>Power / Brightness</h3>
+      <div class="row">
+        <button class="on" onclick="api('/on')">ON</button>
+        <button class="off" onclick="api('/off')">OFF</button>
+        <button onclick="api('/toggle')">TOGGLE</button>
+      </div>
+      <div class="row">
+        <label>Level (0-254)</label>
+        <input id="levelSlider" type="range" min="0" max="254" value="128" oninput="levelLabel.textContent=this.value">
+        <strong id="levelLabel">128</strong>
+        <button onclick="setLevel()">Set Level</button>
+      </div>
+      <div class="row">
+        <label>Color temperature (mireds)</label>
+        <input id="ctValue" type="number" min="0" max="65535" value="300">
+        <button onclick="setCT()">Set CT</button>
+      </div>
+      <div class="row">
+        <label>XY</label>
+        <input id="xyX" type="number" min="0" max="65535" value="32000">
+        <input id="xyY" type="number" min="0" max="65535" value="32000">
+        <button onclick="setXY()">Set XY</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>RGB (NeoPixel)</h3>
+      <div class="row">
+        <input id="rgbPicker" type="color" value="#ff0000">
+        <label>Brightness</label>
+        <input id="rgbBri" type="range" min="0" max="100" value="10" oninput="briLabel.textContent=this.value + '%'">
+        <strong id="briLabel">10%</strong>
+        <button onclick="setRGB()">Apply RGB</button>
+      </div>
+      <div class="row">
+        <button onclick="preset(255,0,0,10)">Red</button>
+        <button onclick="preset(0,255,0,10)">Green</button>
+        <button onclick="preset(0,0,255,10)">Blue</button>
+        <button onclick="preset(0,0,0,0)">Black</button>
+      </div>
+      <pre id="probeBox">probe: n/a</pre>
+    </div>
+
+    <div class="card">
+      <h3>Logs</h3>
+      <pre id="logsBox">waiting for status...</pre>
+    </div>
+  </div>
+
+  <script>
+    function qs(params) {
+      const u = new URLSearchParams();
+      for (const [k, v] of Object.entries(params)) u.set(k, String(v));
+      return u.toString();
+    }
+
+    async function api(path) {
+      const r = await fetch(path);
+      const t = await r.text();
+      if (!r.ok) throw new Error(path + " -> " + r.status + " " + t);
+      return t;
+    }
+
+    function currentTargetQS() {
+      const addr = document.getElementById("targetAddr").value.trim();
+      const idx = Number(document.getElementById("targetIdx").value || "1");
+      const p = {};
+      if (addr) p.addr = addr;
+      if (idx > 0) p.idx = idx;
+      const q = qs(p);
+      return q ? ("?" + q) : "";
+    }
+
+    async function permitJoin() {
+      const sec = Number(document.getElementById("permitSec").value || "120");
+      await api("/permit?sec=" + Math.max(1, Math.min(255, sec)));
+      await refreshStatus();
+    }
+
+    async function discoverQueue() {
+      await api("/discover");
+      await refreshStatus();
+    }
+
+    async function setTarget() {
+      const q = currentTargetQS();
+      await api("/target" + q);
+      await refreshStatus();
+      await probe();
+    }
+
+    async function probe() {
+      const q = currentTargetQS();
+      const out = await api("/probe" + q);
+      document.getElementById("probeBox").textContent = out;
+    }
+
+    async function setLevel() {
+      const v = Number(document.getElementById("levelSlider").value || "128");
+      const q = currentTargetQS();
+      await api("/level?v=" + v + (q ? "&" + q.slice(1) : ""));
+      await probe();
+    }
+
+    async function setCT() {
+      const v = Number(document.getElementById("ctValue").value || "300");
+      const q = currentTargetQS();
+      await api("/ct?v=" + v + (q ? "&" + q.slice(1) : ""));
+      await probe();
+    }
+
+    async function setXY() {
+      const x = Number(document.getElementById("xyX").value || "32000");
+      const y = Number(document.getElementById("xyY").value || "32000");
+      const q = currentTargetQS();
+      await api("/xy?x=" + x + "&y=" + y + (q ? "&" + q.slice(1) : ""));
+      await probe();
+    }
+
+    function hexToRgb(hex) {
+      const c = hex.replace("#", "");
+      return {
+        r: parseInt(c.slice(0, 2), 16),
+        g: parseInt(c.slice(2, 4), 16),
+        b: parseInt(c.slice(4, 6), 16),
+      };
+    }
+
+    async function setRGB() {
+      const rgb = hexToRgb(document.getElementById("rgbPicker").value);
+      const bri = Number(document.getElementById("rgbBri").value || "10") / 100;
+      const q = currentTargetQS();
+      await api(
+        "/rgb?r=" + rgb.r + "&g=" + rgb.g + "&b=" + rgb.b + "&bri=" + bri.toFixed(3) + (q ? "&" + q.slice(1) : "")
+      );
+      await probe();
+    }
+
+    async function preset(r, g, b, briPct) {
+      document.getElementById("rgbPicker").value =
+        "#" + [r, g, b].map(v => v.toString(16).padStart(2, "0")).join("");
+      document.getElementById("rgbBri").value = String(briPct);
+      document.getElementById("briLabel").textContent = briPct + "%";
+      await setRGB();
+    }
+
+    async function refreshStatus() {
+      try {
+        const r = await fetch("/status");
+        const s = await r.json();
+        document.getElementById("statusBox").textContent = JSON.stringify({
+          ip: s.ip,
+          wifi_mode: s.wifi_mode,
+          target_short: s.target_short,
+          target_selector: s.target_selector,
+          permit_open: s.permit_open,
+          permit_sec: s.permit_sec,
+          pending_discovery_short: s.pending_discovery_short,
+          last_probe: s.last_probe
+        }, null, 2);
+
+        document.getElementById("logsBox").textContent = (s.logs || []).join("\n");
+        const online = s.target_short ? "target ready: " + s.target_short : "target missing";
+        const el = document.getElementById("onlineState");
+        if (s.target_short) {
+          el.className = "status-ok";
+          el.textContent = online;
+        } else {
+          el.className = "status-warn";
+          el.textContent = online;
+        }
+      } catch (err) {
+        const el = document.getElementById("onlineState");
+        el.className = "status-bad";
+        el.textContent = "status error: " + err;
+      }
+    }
+
+    setInterval(refreshStatus, 2000);
+    refreshStatus().then(() => probe()).catch(() => {});
+  </script>
+</body>
+</html>

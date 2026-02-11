@@ -1,0 +1,69 @@
+name: Build Firmware Artifacts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "build_firmware.sh"
+      - "tools/wsl-env.sh"
+      - "tools/package_firmware_artifacts.sh"
+      - "firmware/**"
+      - "c_module/**"
+      - "python/uzigbee/**"
+      - ".github/workflows/firmware-artifacts.yml"
+
+jobs:
+  build-esp32c6:
+    runs-on: ubuntu-24.04
+    env:
+      BUILD_DIR_NAME: build-ESP32_GENERIC_C6-uzigbee-ci
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            cmake \
+            ninja-build \
+            ccache \
+            libffi-dev \
+            libssl-dev \
+            libusb-1.0-0 \
+            wget \
+            flex \
+            bison \
+            gperf \
+            python3-venv
+
+      - name: Build Firmware
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./build_firmware.sh \
+            --force-mpy-cross \
+            --skip-submodules \
+            --jobs 4 \
+            --build "${BUILD_DIR_NAME}"
+
+      - name: Package Artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILD_PATH="third_party/micropython-esp32/ports/esp32/${BUILD_DIR_NAME}"
+          bash tools/package_firmware_artifacts.sh "${BUILD_PATH}" "dist/firmware"
+          sha256sum dist/firmware/* > dist/firmware/SHA256SUMS.txt
+
+      - name: Upload Firmware Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: uzigbee-esp32c6-firmware
+          path: dist/firmware/
+          if-no-files-found: error

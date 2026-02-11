@@ -1,0 +1,278 @@
+{
+  "converter_path": "C:\\Users\\thete\\OneDrive\\Dokumenty\\PyCharm\\MicroPythonZigbee\\z2m_converters\\uzigbee.js",
+  "cases": [
+    {
+      "model": "uzb_Light",
+      "expected_domain": "light",
+      "converter_present": true,
+      "extends": [
+        "onOff",
+        "identify"
+      ],
+      "derived_domains": [
+        "switch",
+        "action",
+        "light"
+      ],
+      "derived_features": [],
+      "ok": true
+    },
+    {
+      "model": "uzb_DimmableLight",
+      "expected_domain": "light",
+      "converter_present": true,
+      "extends": [
+        "light"
+      ],
+      "derived_domains": [
+        "light"
+      ],
+      "derived_features": [],
+      "ok": true
+    },
+    {
+      "model": "uzb_ColorLight",
+      "expected_domain": "light",
+      "converter_present": true,
+      "extends": [
+        "light"
+      ],
+      "derived_domains": [
+        "light"
+      ],
+      "derived_features": [],
+      "ok": true
+    },
+    {
+      "model": "uzb_Switch",
+      "expected_domain": "action",
+      "converter_present": true,
+      "extends": [
+        "commandsOnOff"
+      ],
+      "derived_domains": [
+        "action"
+      ],
+      "derived_features": [],
+      "ok": true
+    },
+    {
+      "model": "uzb_DimmableSwitch",
+      "expected_domain": "action",
+      "converter_present": true,
+      "extends": [
+        "commandsOnOff",
+        "commandsLevelCtrl"
+      ],
+      "derived_domains": [
+        "action"
+      ],
+      "derived_features": [],
+      "ok": true
+    },
+    {
+      "model": "uzb_PowerOutlet",
+      "expected_domain": "switch",
+      "converter_present": true,
+      "extends": [
+        "onOff",
+        "electricityMeter"
+      ],
+      "derived_domains": [
+        "switch",
+        "sensor"
+      ],
+      "derived_features": [
+        "power:W",
+        "voltage:V",
+        "current:A"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_TemperatureSensor",
+      "expected_domain": "sensor",
+      "converter_present": true,
+      "extends": [
+        "temperature"
+      ],
+      "derived_domains": [
+        "sensor"
+      ],
+      "derived_features": [
+        "temperature:C"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_HumiditySensor",
+      "expected_domain": "sensor",
+      "converter_present": true,
+      "extends": [
+        "humidity"
+      ],
+      "derived_domains": [
+        "sensor"
+      ],
+      "derived_features": [
+        "humidity:%"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_PressureSensor",
+      "expected_domain": "sensor",
+      "converter_present": true,
+      "extends": [
+        "pressure"
+      ],
+      "derived_domains": [
+        "sensor"
+      ],
+      "derived_features": [
+        "pressure:hPa"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_ClimateSensor",
+      "expected_domain": "sensor",
+      "converter_present": true,
+      "extends": [
+        "temperature",
+        "humidity",
+        "pressure"
+      ],
+      "derived_domains": [
+        "sensor"
+      ],
+      "derived_features": [
+        "temperature:C",
+        "humidity:%",
+        "pressure:hPa"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_DoorLock",
+      "expected_domain": "lock",
+      "converter_present": true,
+      "extends": [
+        "lock"
+      ],
+      "derived_domains": [
+        "lock"
+      ],
+      "derived_features": [],
+      "ok": true
+    },
+    {
+      "model": "uzb_DoorLockController",
+      "expected_domain": "action",
+      "converter_present": true,
+      "extends": [
+        "identify"
+      ],
+      "derived_domains": [
+        "action"
+      ],
+      "derived_features": [],
+      "ok": true
+    },
+    {
+      "model": "uzb_Thermostat",
+      "expected_domain": "climate",
+      "converter_present": true,
+      "extends": [
+        "thermostat"
+      ],
+      "derived_domains": [
+        "climate"
+      ],
+      "derived_features": [
+        "temperature:C"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_OccupancySensor",
+      "expected_domain": "binary_sensor",
+      "converter_present": true,
+      "extends": [
+        "occupancy"
+      ],
+      "derived_domains": [
+        "binary_sensor"
+      ],
+      "derived_features": [
+        "occupancy"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_IASZone",
+      "expected_domain": "binary_sensor",
+      "converter_present": true,
+      "extends": [
+        "iasZoneAlarm"
+      ],
+      "derived_domains": [
+        "binary_sensor"
+      ],
+      "derived_features": [
+        "zone"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_ContactSensor",
+      "expected_domain": "binary_sensor",
+      "converter_present": true,
+      "extends": [
+        "iasZoneAlarm"
+      ],
+      "derived_domains": [
+        "binary_sensor"
+      ],
+      "derived_features": [
+        "door"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_MotionSensor",
+      "expected_domain": "binary_sensor",
+      "converter_present": true,
+      "extends": [
+        "iasZoneAlarm"
+      ],
+      "derived_domains": [
+        "binary_sensor"
+      ],
+      "derived_features": [
+        "motion"
+      ],
+      "ok": true
+    },
+    {
+      "model": "uzb_WindowCovering",
+      "expected_domain": "cover",
+      "converter_present": true,
+      "extends": [
+        "windowCovering"
+      ],
+      "derived_domains": [
+        "cover"
+      ],
+      "derived_features": [],
+      "ok": true
+    }
+  ],
+  "missing_models": [],
+  "missing_domain": [],
+  "missing_features": [],
+  "unknown_extend": [],
+  "ok": true,
+  "timestamp_utc": "2026-02-10T07:37:10.070219+00:00",
+  "strict_extends": true
+}

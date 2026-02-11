@@ -1,0 +1,1572 @@
+# API (Draft)
+
+Public modules (planned):
+- `uzigbee.core`
+- `uzigbee.zcl`
+- `uzigbee.devices`
+- `uzigbee.z2m`
+- `uzigbee.groups`
+- `uzigbee.scenes`
+- `uzigbee.reporting`
+- `uzigbee.security`
+- `uzigbee.custom`
+- `uzigbee.ota`
+- `uzigbee.greenpower`
+- `uzigbee.touchlink`
+- `uzigbee.ncp`
+- `uzigbee.network`
+- `uzigbee.gateway`
+
+Current implemented surface:
+
+Step 23 additions (`DoorLock` / `Thermostat` / `Occupancy`):
+- `_uzigbee`:
+  - `create_door_lock(*, endpoint: int = 1) -> None`
+  - `create_door_lock_controller(*, endpoint: int = 1) -> None`
+  - `create_thermostat(*, endpoint: int = 1) -> None`
+  - `create_occupancy_sensor(*, endpoint: int = 1) -> None`
+  - `send_lock_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, lock: bool = True) -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `create_door_lock(endpoint_id=1)`
+  - `create_door_lock_controller(endpoint_id=1)`
+  - `create_thermostat(endpoint_id=1)`
+  - `create_occupancy_sensor(endpoint_id=1)`
+  - `send_lock_cmd(dst_short_addr, lock=True, dst_endpoint=1, src_endpoint=1)`
+- `uzigbee.devices`:
+  - `DoorLock`
+  - `DoorLockController`
+  - `Thermostat`
+  - `OccupancySensor`
+- new constants:
+  - `CLUSTER_ID_DOOR_LOCK = 0x0101`
+  - `CLUSTER_ID_THERMOSTAT = 0x0201`
+  - `CLUSTER_ID_OCCUPANCY_SENSING = 0x0406`
+  - `ATTR_DOOR_LOCK_LOCK_STATE = 0x0000`
+  - `ATTR_THERMOSTAT_LOCAL_TEMPERATURE = 0x0000`
+  - `ATTR_THERMOSTAT_OCCUPIED_HEATING_SETPOINT = 0x0012`
+  - `ATTR_THERMOSTAT_SYSTEM_MODE = 0x001C`
+  - `ATTR_OCCUPANCY_SENSING_OCCUPANCY = 0x0000`
+- `DEVICE_ID_DOOR_LOCK = 0x000A`
+- `DEVICE_ID_DOOR_LOCK_CONTROLLER = 0x000B`
+- `DEVICE_ID_THERMOSTAT = 0x0301`
+- `DEVICE_ID_OCCUPANCY_SENSOR = 0x000C`
+- `DEVICE_ID_IAS_ZONE = 0x0402`
+- `DEVICE_ID_CONTACT_SENSOR = 0x0402`
+- `DEVICE_ID_MOTION_SENSOR = 0x0402`
+  - `CMD_DOOR_LOCK_LOCK_DOOR = 0x00`
+  - `CMD_DOOR_LOCK_UNLOCK_DOOR = 0x01`
+
+Step 25 additions (`IAS Zone` / `ContactSensor` / `MotionSensor`):
+- `_uzigbee`:
+  - `create_ias_zone(*, endpoint: int = 1, zone_type: int = 0x0015) -> None`
+  - `create_contact_sensor(*, endpoint: int = 1) -> None`
+  - `create_motion_sensor(*, endpoint: int = 1) -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `create_ias_zone(endpoint_id=1, zone_type=IAS_ZONE_TYPE_CONTACT_SWITCH)`
+  - `create_contact_sensor(endpoint_id=1)`
+  - `create_motion_sensor(endpoint_id=1)`
+- `uzigbee.devices`:
+  - `IASZone`
+  - `ContactSensor`
+  - `MotionSensor`
+
+Step 26 additions (`WindowCovering`):
+- `_uzigbee`:
+  - `create_window_covering(*, endpoint: int = 1) -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `create_window_covering(endpoint_id=1)`
+- `uzigbee.devices`:
+  - `WindowCovering`
+- new constants:
+  - `CLUSTER_ID_WINDOW_COVERING = 0x0102`
+  - `ATTR_WINDOW_COVERING_CURRENT_POSITION_LIFT_PERCENTAGE = 0x0008`
+  - `ATTR_WINDOW_COVERING_CURRENT_POSITION_TILT_PERCENTAGE = 0x0009`
+  - `DEVICE_ID_WINDOW_COVERING = 0x0202`
+
+Step 28 additions (`Attribute Reporting Configuration`):
+- `_uzigbee`:
+  - `configure_reporting(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, cluster_id: int, attr_id: int, attr_type: int, min_interval: int = 0, max_interval: int = 300, reportable_change: int | None = None) -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `configure_reporting(dst_short_addr, cluster_id, attr_id, attr_type, src_endpoint=1, dst_endpoint=1, min_interval=0, max_interval=300, reportable_change=None)`
+
+Step 29 additions (`Reporting presets helper`):
+- new module:
+  - `uzigbee.reporting`
+- presets:
+  - `PRESET_DOOR_LOCK`
+  - `PRESET_THERMOSTAT`
+  - `PRESET_OCCUPANCY`
+  - `PRESET_CONTACT_SENSOR`
+  - `PRESET_MOTION_SENSOR`
+- helper functions:
+  - `apply_reporting_preset(stack, dst_short_addr, preset, src_endpoint=1, dst_endpoint=1) -> tuple`
+  - `configure_door_lock(stack, dst_short_addr, src_endpoint=1, dst_endpoint=1) -> tuple`
+  - `configure_thermostat(stack, dst_short_addr, src_endpoint=1, dst_endpoint=1) -> tuple`
+  - `configure_occupancy(stack, dst_short_addr, src_endpoint=1, dst_endpoint=1) -> tuple`
+  - `configure_contact_sensor(stack, dst_short_addr, src_endpoint=1, dst_endpoint=1) -> tuple`
+  - `configure_motion_sensor(stack, dst_short_addr, src_endpoint=1, dst_endpoint=1) -> tuple`
+
+Step 30 additions (`Reporting presets wired into device wrappers`):
+- `uzigbee.devices`:
+  - `DoorLock.configure_default_reporting(dst_short_addr=0x0000, dst_endpoint=1) -> tuple`
+  - `Thermostat.configure_default_reporting(dst_short_addr=0x0000, dst_endpoint=1) -> tuple`
+  - `OccupancySensor.configure_default_reporting(dst_short_addr=0x0000, dst_endpoint=1) -> tuple`
+  - `IASZone.configure_default_reporting(dst_short_addr=0x0000, dst_endpoint=1) -> tuple`
+  - `ContactSensor.configure_default_reporting(dst_short_addr=0x0000, dst_endpoint=1) -> tuple`
+  - `MotionSensor.configure_default_reporting(dst_short_addr=0x0000, dst_endpoint=1) -> tuple`
+
+Step 31 additions (`Group management`):
+- new module:
+  - `uzigbee.groups`
+- `_uzigbee`:
+  - `send_group_add_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int) -> None`
+  - `send_group_remove_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int) -> None`
+  - `send_group_remove_all_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1) -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `send_group_add_cmd(dst_short_addr, group_id, dst_endpoint=1, src_endpoint=1)`
+  - `send_group_remove_cmd(dst_short_addr, group_id, dst_endpoint=1, src_endpoint=1)`
+  - `send_group_remove_all_cmd(dst_short_addr, dst_endpoint=1, src_endpoint=1)`
+- `uzigbee.groups` helpers:
+  - `add_group(stack, dst_short_addr, group_id, src_endpoint=1, dst_endpoint=1) -> int`
+  - `remove_group(stack, dst_short_addr, group_id, src_endpoint=1, dst_endpoint=1) -> int`
+  - `remove_all_groups(stack, dst_short_addr, src_endpoint=1, dst_endpoint=1) -> bool`
+- `uzigbee.devices`:
+  - `Switch.add_to_group(dst_short_addr, group_id, dst_endpoint=1) -> int`
+  - `Switch.remove_from_group(dst_short_addr, group_id, dst_endpoint=1) -> int`
+  - `Switch.clear_groups(dst_short_addr, dst_endpoint=1) -> bool`
+
+Step 36 additions (`Binding management`):
+- `_uzigbee`:
+  - `send_bind_cmd(*, src_ieee_addr: bytes, src_endpoint: int = 1, cluster_id: int, dst_ieee_addr: bytes, dst_endpoint: int = 1, req_dst_short_addr: int) -> None`
+  - `send_unbind_cmd(*, src_ieee_addr: bytes, src_endpoint: int = 1, cluster_id: int, dst_ieee_addr: bytes, dst_endpoint: int = 1, req_dst_short_addr: int) -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `send_bind_cmd(src_ieee_addr, cluster_id, dst_ieee_addr, req_dst_short_addr, src_endpoint=1, dst_endpoint=1)`
+  - `send_unbind_cmd(src_ieee_addr, cluster_id, dst_ieee_addr, req_dst_short_addr, src_endpoint=1, dst_endpoint=1)`
+
+Step 37 additions (`ZDO Mgmt_Bind read path`):
+- `_uzigbee`:
+  - `request_binding_table(*, dst_short_addr: int, start_index: int = 0) -> None`
+  - `get_binding_table_snapshot() -> tuple[int, int, int, int, tuple]`
+- `uzigbee.core.ZigbeeStack`:
+  - `request_binding_table(dst_short_addr, start_index=0)`
+  - `get_binding_table_snapshot() -> dict`
+    - keys: `status`, `index`, `total`, `count`, `records`
+    - `records` entry keys: `src_ieee_addr`, `src_endpoint`, `cluster_id`, `dst_addr_mode`, `dst_short_addr`, `dst_ieee_addr`, `dst_endpoint`
+
+Step 38 additions (`ZDO Active_EP read path`):
+- `_uzigbee`:
+  - `request_active_endpoints(*, dst_short_addr: int) -> None`
+  - `get_active_endpoints_snapshot() -> tuple[int, int, tuple]`
+- `uzigbee.core.ZigbeeStack`:
+  - `request_active_endpoints(dst_short_addr)`
+  - `get_active_endpoints_snapshot() -> dict`
+    - keys: `status`, `count`, `endpoints`
+
+Step 39 additions (`ZDO Node_Desc read path`):
+- `_uzigbee`:
+  - `request_node_descriptor(*, dst_short_addr: int) -> None`
+  - `get_node_descriptor_snapshot() -> tuple[int, int, tuple | None]`
+- `uzigbee.core.ZigbeeStack`:
+  - `request_node_descriptor(dst_short_addr)`
+  - `get_node_descriptor_snapshot() -> dict`
+    - keys: `status`, `addr`, `node_desc`
+
+Step 40 additions (`ZDO Simple_Desc read path`):
+- `_uzigbee`:
+  - `request_simple_descriptor(*, dst_short_addr: int, endpoint: int) -> None`
+  - `get_simple_descriptor_snapshot() -> tuple[int, int, tuple | None]`
+- `uzigbee.core.ZigbeeStack`:
+  - `request_simple_descriptor(dst_short_addr, endpoint)`
+  - `get_simple_descriptor_snapshot() -> dict`
+    - keys: `status`, `addr`, `simple_desc`
+
+Step 41 additions (`ZDO Power_Desc read path`):
+- `_uzigbee`:
+  - `request_power_descriptor(*, dst_short_addr: int) -> None`
+  - `get_power_descriptor_snapshot() -> tuple[int, int, tuple | None]`
+- `uzigbee.core.ZigbeeStack`:
+  - `request_power_descriptor(dst_short_addr)`
+  - `get_power_descriptor_snapshot() -> dict`
+    - keys: `status`, `addr`, `power_desc`
+
+Step 42 additions (`Composed ZDO descriptor discovery helper`):
+- `uzigbee.core.ZigbeeStack`:
+  - `discover_node_descriptors(dst_short_addr, endpoint_ids=None, include_power_desc=True, include_green_power=False, timeout_ms=5000, poll_ms=200, strict=True) -> dict`
+    - keys: `short_addr`, `endpoint_ids`, `active_endpoints`, `node_descriptor`, `simple_descriptors`, `power_descriptor`, `errors`
+
+Step 43 additions (`Scene management commands`):
+- new module:
+  - `uzigbee.scenes`
+- `_uzigbee`:
+  - `send_scene_add_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int, scene_id: int, transition_ds: int = 0) -> None`
+  - `send_scene_remove_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int, scene_id: int) -> None`
+  - `send_scene_remove_all_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int) -> None`
+  - `send_scene_recall_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int, scene_id: int) -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `send_scene_add_cmd(dst_short_addr, group_id, scene_id, dst_endpoint=1, src_endpoint=1, transition_ds=0)`
+  - `send_scene_remove_cmd(dst_short_addr, group_id, scene_id, dst_endpoint=1, src_endpoint=1)`
+  - `send_scene_remove_all_cmd(dst_short_addr, group_id, dst_endpoint=1, src_endpoint=1)`
+  - `send_scene_recall_cmd(dst_short_addr, group_id, scene_id, dst_endpoint=1, src_endpoint=1)`
+- `uzigbee.scenes` helpers:
+  - `add_scene(stack, dst_short_addr, group_id, scene_id, src_endpoint=1, dst_endpoint=1, transition_ds=0) -> tuple`
+  - `remove_scene(stack, dst_short_addr, group_id, scene_id, src_endpoint=1, dst_endpoint=1) -> tuple`
+  - `remove_all_scenes(stack, dst_short_addr, group_id, src_endpoint=1, dst_endpoint=1) -> int`
+  - `recall_scene(stack, dst_short_addr, group_id, scene_id, src_endpoint=1, dst_endpoint=1) -> tuple`
+- `uzigbee.devices` (`Switch`):
+  - `add_scene(dst_short_addr, group_id, scene_id, dst_endpoint=1, transition_ds=0) -> tuple`
+  - `remove_scene(dst_short_addr, group_id, scene_id, dst_endpoint=1) -> tuple`
+  - `clear_scenes(dst_short_addr, group_id, dst_endpoint=1) -> int`
+  - `recall_scene(dst_short_addr, group_id, scene_id, dst_endpoint=1) -> tuple`
+
+Step 44 additions (`Security: install-code + network-key management`):
+- new module:
+  - `uzigbee.security`
+- `_uzigbee`:
+  - `set_install_code_policy(*, enabled: bool = False) -> None`
+  - `get_install_code_policy() -> bool`
+  - `set_network_security_enabled(*, enabled: bool = True) -> None`
+  - `is_network_security_enabled() -> bool`
+  - `set_network_key(*, key: bytes[16]) -> None`
+  - `get_primary_network_key() -> bytes[16]`
+  - `switch_network_key(*, key: bytes[16], key_seq_num: int) -> None`
+  - `broadcast_network_key(*, key: bytes[16], key_seq_num: int) -> None`
+  - `broadcast_network_key_switch(*, key_seq_num: int) -> None`
+  - `add_install_code(*, ieee_addr: bytes[8], ic_str: str) -> None`
+  - `set_local_install_code(*, ic_str: str) -> None`
+  - `remove_install_code(*, ieee_addr: bytes[8]) -> None`
+  - `remove_all_install_codes() -> None`
+  - constants: `IC_TYPE_48`, `IC_TYPE_64`, `IC_TYPE_96`, `IC_TYPE_128`
+- `uzigbee.core.ZigbeeStack`:
+  - `set_install_code_policy(enabled=False)`
+  - `get_install_code_policy() -> bool`
+  - `set_network_security_enabled(enabled=True)`
+  - `is_network_security_enabled() -> bool`
+  - `set_network_key(key)`
+  - `get_primary_network_key() -> bytes`
+  - `switch_network_key(key, key_seq_num)`
+  - `broadcast_network_key(key, key_seq_num)`
+  - `broadcast_network_key_switch(key_seq_num)`
+  - `add_install_code(ieee_addr, ic_str)`
+  - `set_local_install_code(ic_str)`
+  - `remove_install_code(ieee_addr)`
+  - `remove_all_install_codes()`
+- `uzigbee.security` helpers:
+  - `normalize_network_key(key) -> bytes`
+  - `set_network_key(stack, key) -> bytes`
+  - `switch_network_key(stack, key, key_seq_num) -> tuple`
+  - `broadcast_network_key(stack, key, key_seq_num, activate=False) -> tuple`
+  - `add_install_code(stack, ieee_addr, ic_str) -> bytes`
+  - `set_local_install_code(stack, ic_str) -> bool`
+  - `remove_install_code(stack, ieee_addr) -> bytes`
+  - `remove_all_install_codes(stack) -> bool`
+  - `configure_security(stack, install_code_policy=None, network_security_enabled=None, network_key=None) -> dict`
+
+Step 45 additions (`Custom clusters: manufacturer-specific`):
+- new module:
+  - `uzigbee.custom`
+- `_uzigbee`:
+  - `clear_custom_clusters() -> None`
+  - `add_custom_cluster(*, cluster_id: int, cluster_role: int = CLUSTER_ROLE_SERVER) -> None`
+  - `add_custom_attr(*, cluster_id: int, attr_id: int, attr_type: int, attr_access: int = ATTR_ACCESS_READ_WRITE, initial_value: int = 0) -> None`
+  - `send_custom_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, profile_id: int = 0x0104, cluster_id: int, custom_cmd_id: int, direction: int = CMD_DIRECTION_TO_SERVER, disable_default_resp: bool = False, manuf_specific: bool = False, manuf_code: int = 0, data_type: int = 0x41, payload: bytes | None = None) -> None`
+  - constants: `CUSTOM_CLUSTER_ID_MIN`, `ATTR_ACCESS_*`, `CMD_DIRECTION_TO_*`
+- `uzigbee.core.ZigbeeStack`:
+  - `clear_custom_clusters()`
+  - `add_custom_cluster(cluster_id, cluster_role=CLUSTER_ROLE_SERVER)`
+  - `add_custom_attr(cluster_id, attr_id, attr_type, attr_access=ATTR_ACCESS_READ_WRITE, initial_value=0)`
+  - `send_custom_cmd(dst_short_addr, cluster_id, custom_cmd_id, payload=None, dst_endpoint=1, src_endpoint=1, profile_id=0x0104, direction=CMD_DIRECTION_TO_SERVER, disable_default_resp=False, manuf_specific=False, manuf_code=0, data_type=0x41)`
+- `uzigbee.custom` helpers:
+  - `add_custom_cluster(stack, cluster_id, attrs=(), cluster_role=CLUSTER_ROLE_SERVER) -> int`
+  - `send_custom_cmd(stack, dst_short_addr, cluster_id, custom_cmd_id, payload=None, ...) -> tuple`
+
+Step 46 additions (`OTA client control plane - baseline`):
+- new module:
+  - `uzigbee.ota`
+- `_uzigbee`:
+  - `ota_client_query_interval_set(*, endpoint: int = 1, interval_min: int = 5) -> None`
+  - `ota_client_query_image_req(*, server_ep: int = 1, server_addr: int = 0x00) -> None`
+  - `ota_client_query_image_stop() -> None`
+- `uzigbee.core.ZigbeeStack`:
+  - `ota_client_query_interval_set(endpoint_id=1, interval_min=5)`
+  - `ota_client_query_image_req(server_ep=1, server_addr=0x00)`
+  - `ota_client_query_image_stop()`
+- `uzigbee.ota` helpers:
+  - `set_query_interval(stack, endpoint_id=1, interval_min=5) -> tuple`
+  - `query_image(stack, server_ep=1, server_addr=0x00) -> tuple`
+  - `stop_query(stack) -> bool`
+- runtime note:
+  - current firmware guard returns `OSError(262)` / `ESP_ERR_NOT_SUPPORTED` for these three OTA control calls to avoid vendor Zigbee OTA assert (`zcl_general_commands.c:612`) on ESP32-C6.
+
+Step 47 additions (`OTA control capability probe`):
+- `_uzigbee`:
+  - `ota_client_control_supported() -> bool`
+- `uzigbee.core.ZigbeeStack`:
+  - `ota_client_control_supported() -> bool`
+- `uzigbee.ota` helpers:
+  - `is_control_supported(stack) -> bool`
+- runtime note:
+  - current ESP32-C6 firmware returns `False`; OTA control calls remain guarded with `OSError(262)` until upstream OTA assert issue is resolved.
+
+Step 48 additions (`OTA capability fallback helpers + runtime wiring`):
+- `uzigbee.ota` helpers:
+  - `set_query_interval_if_supported(stack, endpoint_id=1, interval_min=5) -> bool`
+  - `query_image_if_supported(stack, server_ep=1, server_addr=0x00) -> bool`
+  - `stop_query_if_supported(stack) -> bool`
+- behavior:
+  - when OTA control is unsupported, helpers return `False` and skip control calls.
+  - when OTA control is supported, helpers execute control calls and return `True`.
+- example runtime wiring:
+  - `examples/coordinator_web_demo.py` now logs `ota control supported=<bool>` during Zigbee startup.
+
+Step 75 additions (`OTA server + client manager API`):
+- `uzigbee.ota` new helpers:
+  - `capabilities(stack) -> {"client_control": bool, "server_control": bool}`
+  - `is_server_supported(stack) -> bool`
+  - `start_client(stack, callback=None, endpoint_id=1, strict=False) -> dict`
+  - `stop_client(stack, strict=False) -> dict`
+  - `start_server(stack, image_path, file_version, hw_version, endpoint_id=1, manufacturer_code=None, image_type=None, min_hw_version=None, max_hw_version=None, strict=False) -> dict`
+  - `stop_server(stack, strict=False) -> dict`
+- new stateful class:
+  - `uzigbee.OtaManager`
+  - `status()`, `start_client()`, `stop_client()`, `start_server()`, `stop_server()`
+  - pass-through query control: `set_query_interval()`, `query_image()`, `stop_query()`
+- behavior:
+  - API is capability-driven and safe by default (`strict=False`) to avoid runtime crashes on unsupported firmware.
+  - `strict=True` allows fail-fast behavior when OTA start/stop control is required by application logic.
+
+Step 76 additions (`Green Power Proxy/Sink baseline`):
+- new module:
+  - `uzigbee.greenpower`
+- exported type:
+  - `uzigbee.GreenPowerManager`
+- signal helpers:
+  - `gp_signal_ids() -> tuple[int, int, int]`
+  - `is_gp_signal(signal_id) -> bool`
+  - tracks GPP signals from stack callback path:
+    - `SIGNAL_GPP_COMMISSIONING`
+    - `SIGNAL_GPP_MODE_CHANGE`
+    - `SIGNAL_GPP_APPROVE_COMMISSIONING`
+- capability and control API:
+  - `capabilities(stack) -> {"signals": bool, "proxy_control": bool, "sink_control": bool, "commissioning_control": bool}`
+  - manager controls:
+    - `set_proxy(enabled=True, strict=False) -> dict`
+    - `set_sink(enabled=True, strict=False) -> dict`
+    - `set_commissioning(allowed=True, duration_s=60, strict=False) -> dict`
+- event-driven manager:
+  - `on_event(callback=None) -> self`
+  - `install_signal_handler(chain_callback=None) -> callback`
+  - `process_signal(signal_id, status, payload=None) -> bool`
+  - queue API: `poll_event(default=None)`, `drain_events(max_items=None)`
+  - status API: `status() -> dict`
+- behavior:
+  - fully safe fallback on unsupported firmware control hooks (`supported=False` responses with `strict=False`).
+  - fail-fast available with `strict=True`.
+
+Step 77 additions (`Touchlink commissioning baseline`):
+- new module:
+  - `uzigbee.touchlink`
+- exported type:
+  - `uzigbee.TouchlinkManager`
+- signal helpers:
+  - `touchlink_signal_ids() -> tuple[...]`
+  - `is_touchlink_signal(signal_id) -> bool`
+  - tracks touchlink signal family:
+    - `SIGNAL_TOUCHLINK_NWK_STARTED`
+    - `SIGNAL_TOUCHLINK_NWK_JOINED_ROUTER`
+    - `SIGNAL_TOUCHLINK`
+    - `SIGNAL_TOUCHLINK_TARGET`
+    - `SIGNAL_TOUCHLINK_NWK`
+    - `SIGNAL_TOUCHLINK_TARGET_FINISHED`
+- capability and control API:
+  - `capabilities(stack) -> {"signals": bool, "initiator_control": bool, "initiator_stop_control": bool, "target_control": bool, "factory_reset_control": bool}`
+  - manager controls:
+    - `start_initiator(channel=None, strict=False) -> dict`
+    - `stop_initiator(strict=False) -> dict`
+    - `set_target_mode(enabled=True, strict=False) -> dict`
+    - `factory_reset(strict=False) -> dict`
+- event-driven manager:
+  - `on_event(callback=None) -> self`
+  - `install_signal_handler(chain_callback=None) -> callback`
+  - `process_signal(signal_id, status, payload=None) -> bool`
+  - queue API: `poll_event(default=None)`, `drain_events(max_items=None)`
+  - status API: `status() -> dict`
+- behavior:
+  - safe fallback on unsupported firmware with `supported=False` (non-strict mode).
+  - fail-fast path enabled by `strict=True`.
+
+Step 78 additions (`NCP/RCP mode baseline`):
+- new module:
+  - `uzigbee.ncp`
+- exported type:
+  - `uzigbee.NcpRcpManager`
+- constants:
+  - modes: `NCP_MODE_NCP`, `NCP_MODE_RCP`, `NCP_MODE_DISABLED`
+  - transport: `TRANSPORT_UART`, `TRANSPORT_SPI`, `TRANSPORT_USB`
+- capability and frame helpers:
+  - `capabilities(stack) -> {"ncp_start_control": bool, "rcp_start_control": bool, "stop_control": bool, "ncp_frame_tx": bool, "rcp_frame_tx": bool}`
+  - `encode_frame_hex(frame: bytes) -> str`
+  - `decode_frame_hex(text: str|bytes) -> bytes`
+- manager runtime API:
+  - `configure(mode=None, transport=None, port=None, baudrate=None, flow_control=None) -> dict`
+  - `start(strict=False) -> dict`
+  - `stop(strict=False) -> dict`
+  - `send_host_frame(frame, strict=False) -> dict`
+  - `receive_device_frame(frame) -> dict`
+  - `install_signal_handler(chain_callback=None) -> callback`
+  - queue API: `poll_event(default=None)`, `drain_events(max_items=None)`
+  - codecs: `decode_frame(text)`, `encode_frame(frame)`, `decode_json(text)`, `encode_json(payload)`
+  - state API: `status() -> dict`
+- behavior:
+  - safe fallback on unsupported firmware control hooks (`supported=False`) with `strict=False`.
+  - fail-fast path available with `strict=True`.
+
+Step 49 additions (`High-level coordinator/network scaffold`):
+- new module:
+  - `uzigbee.network`
+- exported types:
+  - `Coordinator`
+  - `DeviceRegistry`
+  - `DiscoveredDevice`
+- `Coordinator` (automation-first facade):
+  - `start(form_network=True)`
+  - `permit_join(duration_s=60, auto_discover=True)`
+  - `discover_device(short_addr, endpoint_ids=None, strict=None) -> DiscoveredDevice`
+  - `get_device(short_addr, default=None) -> DiscoveredDevice | None`
+  - `get_device_by_ieee(ieee_addr, default=None) -> DiscoveredDevice | None`
+  - `find_devices(feature=None, features=None, manufacturer_code=None, profile_id=None, device_id=None, ieee_addr=None) -> tuple[DiscoveredDevice, ...]`
+  - `select_device(feature=None, features=None, manufacturer_code=None, profile_id=None, device_id=None, ieee_addr=None, default=None) -> DiscoveredDevice | None`
+  - `wait_for_device(feature=None, features=None, timeout_ms=60000, poll_ms=100, process_batch=4, permit_join_s=None, auto_discover=True, default=None) -> DiscoveredDevice | None`
+  - `list_devices() -> tuple[DiscoveredDevice, ...]`
+  - `devices` property (`dict[short_addr -> DiscoveredDevice]`)
+  - callbacks: `on_signal`, `on_attribute`, `on_device_added`, `on_device_updated`
+  - startup behavior:
+    - `start()` now auto-creates local coordinator control endpoint (`create_on_off_switch(local_endpoint)`) and auto-runs `register_device()`.
+    - this removes the need for manual low-level endpoint setup before high-level control/discovery loops.
+    - `start()` attempts Wi-Fi/802.15.4 coexist enable (`enable_wifi_i154_coex`) when firmware exposes this hook.
+    - this mitigates cases where inbound LAN HTTP to coordinator portal timed out after Zigbee start.
+- `DiscoveredDevice`:
+  - inferred endpoint map + capability set (`features`)
+  - identity shortcut: `device.ieee_addr`, `device.ieee_hex`
+  - command shortcuts: `on`, `off`, `toggle`, `set_level`, `set_color_xy`, `set_color_temperature`, `lock`, `unlock`
+  - read proxy: `device.read.on_off()`, `device.read.level()`, `device.read.color_xy()`, `device.read.color_temperature()`, `device.read.temperature()`, `device.read.humidity()`, `device.read.pressure()`, `device.read.occupancy()`
+  - state cache: `device.state[(cluster_id, attr_id)]`
+- runtime note:
+  - source-aware callback path is available when source metadata exists; dispatcher keeps legacy callback compatibility.
+  - read-only ZDO descriptor requests (`binding table`, `active endpoints`, `node/simple/power descriptor`) are valid after stack start, even without prior local endpoint registration.
+
+Step 51 additions (`Auto-discovery pipeline v2`):
+- `uzigbee.network.Coordinator`:
+  - new init options:
+    - `join_debounce_ms` (default: `3000`)
+    - `discovery_retry_max` (default: `3`)
+    - `discovery_retry_base_ms` (default: `400`)
+    - `discovery_retry_max_backoff_ms` (default: `5000`)
+    - `discovery_queue_max` (default: `16`)
+  - new methods:
+    - `process_pending_discovery(max_items=4) -> dict`
+    - `pending_discovery() -> tuple[dict, ...]`
+    - `discovery_stats() -> dict`
+- behavior changes:
+  - join signals no longer call immediate discovery in direct path only.
+  - join events are queued (`short_addr`) with debounce protection.
+  - discovery failures are retried with exponential backoff (bounded by `discovery_retry_max_backoff_ms`).
+  - queue overflow is handled by dropping oldest pending entry.
+  - discovery timeout/poll parameters are hardened and clamped internally to safe ranges.
+- runtime note:
+  - this step is Python-only orchestration; C bridge changes for source-address precision are still planned in Faza 4.5.7.
+
+Step 52 additions (`Rich identity model: device.identity`):
+- new type:
+  - `uzigbee.network.DeviceIdentity`
+- exported from package:
+  - `uzigbee.DeviceIdentity`
+- `DiscoveredDevice`:
+  - new field: `device.identity`
+  - `to_dict()` now includes `identity` snapshot.
+- `DeviceIdentity` fields:
+  - `short_addr`
+  - `manufacturer_code` (from Node Descriptor)
+  - `endpoints`
+  - `primary_endpoint`
+  - `profile_id` (primary endpoint)
+  - `device_id` (primary endpoint)
+  - `device_version` (primary endpoint)
+  - `power_source`
+  - `power_source_level`
+- `DeviceIdentity` methods:
+  - `endpoint(endpoint_id=None) -> dict | None`
+  - `to_dict() -> dict`
+- source mapping:
+  - Node Descriptor: manufacturer code
+  - Simple Descriptor rows: endpoint profile/device/version and cluster lists
+  - Power Descriptor: current source + source level
+
+Step 53 additions (`State engine: TTL cache + stale policy`):
+- `uzigbee.network.Coordinator`:
+  - new init options:
+    - `state_ttl_ms` (default: `120000`; `0` = never stale)
+    - `stale_read_policy` (`allow` | `refresh` | `raise`; default: `allow`)
+    - `state_cache_max` (default: `64`; bounded `8..512`, per-device cap)
+  - new method:
+    - `configure_state_engine(state_ttl_ms=None, stale_read_policy=None, state_cache_max=None) -> dict`
+- `DiscoveredDevice`:
+  - state metadata now tracked per attribute key (`cluster_id`, `attr_id`):
+    - `updated_ms`
+    - `source` (`read`, `attribute`, `control`)
+    - `authoritative` (`True` for read/attribute, `False` for optimistic control writes)
+  - new methods:
+    - `state_info(cluster_id, attr_id) -> dict | None`
+    - `get_state(cluster_id, attr_id, default=None, allow_stale=True)`
+  - cache storage is bounded by `state_cache_max`; oldest entries are pruned first.
+- stale-read behavior (`device.read.*`):
+  - `allow`: return cached value even if stale
+  - `refresh`: re-read attribute from Zigbee stack when stale
+  - `raise`: raise `ZigbeeError` when stale cache would be used
+
+Step 54 additions (`Capability matrix: thermostat/cover/ias/energy wrappers`):
+- `DiscoveredDevice.read` new methods:
+  - `thermostat_temperature()`
+  - `thermostat_heating_setpoint()`
+  - `thermostat_system_mode()`
+  - `cover_lift()`
+  - `cover_tilt()`
+  - `ias_zone_status()`
+  - `ias_alarm()`
+  - `power_w()`
+  - `voltage_v()`
+  - `current_a()`
+- `DiscoveredDevice.control` new methods:
+  - `thermostat_heating_setpoint(celsius, check=False)`
+  - `thermostat_system_mode(mode, check=False)`
+  - `cover_lift(percent, check=False)`
+  - `cover_tilt(percent, check=False)`
+  - `ias_alarm(active, check=False)`
+  - `power_w(watts, check=False)`
+  - `voltage_v(volts, check=False)`
+  - `current_a(amps, check=False)`
+- `DiscoveredDevice` convenience aliases:
+  - `set_thermostat_heating_setpoint(...)`
+  - `set_thermostat_mode(...)`
+  - `set_cover_position(...)`
+  - `set_cover_tilt(...)`
+  - `set_ias_alarm(...)`
+  - `set_power_w(...)`
+  - `set_voltage_v(...)`
+  - `set_current_a(...)`
+
+Step 55 additions (`Binding/reporting automation per capability`):
+- `Coordinator` new init options:
+  - `auto_configure_reporting` (default: `False`)
+  - `auto_bind` (default: `False`)
+  - `local_endpoint` (default: `1`)
+- `Coordinator` new methods:
+  - `configure_automation(auto_bind=None, auto_configure_reporting=None, local_endpoint=None) -> dict`
+  - `automation_stats() -> dict`
+- behavior:
+  - after each successful discovery, coordinator stores automation metadata in `device.meta["automation"]`.
+  - when `auto_configure_reporting=True`, reporting presets are auto-applied by detected capability:
+    - `lock`, `thermostat`, `occupancy`, `ias_zone`, `cover`, `energy`
+- when `auto_bind=True`, coordinator attempts bind for mapped clusters.
+- if remote IEEE is unavailable, bind is safely skipped with reason (`missing_remote_ieee`) instead of raising.
+
+Step 56 additions (`Attribute source-address integration in Python layer`):
+- `Coordinator._handle_attribute(...)` now accepts multiple callback wire formats:
+  - legacy: `(endpoint, cluster_id, attr_id, value, status)`
+  - extended: `(endpoint, cluster_id, attr_id, value, attr_type, status)`
+  - source-aware: `(source_short_addr, endpoint, cluster_id, attr_id, value, attr_type, status)`
+- state engine integration:
+  - when source short address is present, cache update is applied only to matching `DiscoveredDevice`.
+  - `state_meta` includes optional fields:
+    - `source_short_addr`
+    - `source_endpoint`
+    - `attr_type`
+- compatibility:
+  - user attribute callbacks with older signature still work (fallback path).
+  - C bridge now also forwards report events (`ESP_ZB_CORE_REPORT_ATTR_CB_ID`) with source metadata.
+
+Step 57 additions (`Persistent device graph`):
+- `Coordinator` new init options:
+  - `persistence_path` (default: `None`)
+  - `persistence_min_interval_ms` (default: `30000`)
+- snapshot/persistence methods:
+  - `dump_registry() -> dict`
+  - `restore_registry(snapshot, merge=False) -> int`
+  - `save_registry(path=None, force=False) -> dict`
+  - `load_registry(path=None, merge=False) -> dict`
+- write-throttling:
+  - `save_registry()` throttles writes using `persistence_min_interval_ms` unless `force=True`.
+- serialization support:
+  - `DiscoveredDevice.from_dict(...)` and `DeviceIdentity.from_dict(...)`
+  - state cache and state metadata are preserved across restore.
+
+Step 60 additions (`Registry query API + IEEE identity`):
+- `DeviceIdentity`:
+  - new field: `ieee_addr` (bytes or `None`)
+  - `to_dict()` stores IEEE as normalized hex string.
+- `DiscoveredDevice`:
+  - new shortcuts:
+    - `ieee_addr` (bytes or `None`)
+    - `ieee_hex` (hex string or `None`)
+- `Coordinator`:
+  - `get_device_by_ieee(ieee_addr, default=None)`
+  - `find_devices(feature=None, features=None, manufacturer_code=None, profile_id=None, device_id=None, ieee_addr=None)`
+  - `select_device(feature=None, features=None, manufacturer_code=None, profile_id=None, device_id=None, ieee_addr=None, default=None)`
+- accepted IEEE formats in query methods:
+  - bytes-like `len==8`
+  - hex string (`"0011223344556677"`)
+  - hex string with separators (`"00:11:22:33:44:55:66:77"`)
+
+Step 61 additions (`Device lifecycle: online/offline + last_seen`):
+- `Coordinator` new init option:
+  - `offline_after_ms` (default: `300000`)
+- `Coordinator` new methods:
+  - `configure_lifecycle(offline_after_ms=None) -> dict`
+  - `device_status(short_addr, default=None) -> dict | None`
+  - `mark_device_offline(short_addr, reason="manual") -> bool`
+  - `mark_device_online(short_addr, source="manual") -> bool`
+- `Coordinator` filtering extensions:
+  - `get_device(short_addr, default=None, online=None)`
+  - `list_devices(online=None)`
+  - `find_devices(..., online=None)`
+  - `select_device(..., online=None, default=None)`
+- `DiscoveredDevice` lifecycle helpers:
+  - `touch_seen(now_ms=None, source="activity") -> int`
+  - `mark_offline(reason="manual", now_ms=None) -> dict`
+  - `last_seen_age_ms(now_ms=None) -> int`
+  - `is_online(offline_after_ms=300000, now_ms=None) -> bool`
+  - `lifecycle(offline_after_ms=300000, now_ms=None) -> dict`
+
+Step 102 additions (`Auto-commissioning API contract v1`):
+- new module export:
+  - `uzigbee.NetworkProfile` (serializable network profile model)
+- `Coordinator` init contract:
+  - `network_mode`: `"auto"` (default), `"fixed"`, `"guided"`
+  - compatibility: legacy `channel/channel_mask/pan_id/extended_pan_id` without explicit mode auto-upgrades behavior to `"fixed"` for backward compatibility.
+- `Coordinator` new method:
+  - `network_info() -> dict`
+  - returns runtime info (`started`, `form_network`, `short_addr`, `ieee_hex`) and profile snapshot (`channel_mask`, optional single `channel`, `pan_id`, `extended_pan_id`, `source`, `formed_at_ms`).
+- `Router` / `EndDevice` init contract:
+  - `commissioning_mode`: `"auto"` (default), `"fixed"`, `"guided"`
+  - same backward-compatible legacy upgrade rule as coordinator.
+- `Router` / `EndDevice` new method:
+  - `network_info() -> dict` with commissioning mode and profile snapshot.
+- persistence updates:
+  - `Coordinator.dump_registry()` now includes `network_mode` and `network_profile`.
+  - node snapshots (`dump_node_state`) include `commissioning_mode` and `network_profile`.
+
+Step 105 additions (`Runtime network introspection bridge`):
+- C/Python bridge:
+  - `_uzigbee.get_network_runtime() -> tuple`
+  - tuple layout: `(channel, pan_id, extended_pan_id_bytes, short_addr, formed, joined)`
+  - lock-safe read path on Zigbee stack thread boundary (no Python allocations in Zigbee task).
+- Python core wrapper:
+  - `ZigbeeStack.get_network_runtime() -> dict`
+  - keys: `channel`, `pan_id`, `extended_pan_id`, `extended_pan_id_hex`, `short_addr`, `formed`, `joined`.
+- high-level runtime exposure:
+  - `Coordinator.network_info()` now includes runtime fields:
+    - `channel`, `pan_id`, `extended_pan_id`, `extended_pan_id_hex`, `formed`, `joined`.
+  - `Router/EndDevice.network_info()` now includes the same runtime fields.
+
+Step 106 additions (`Coordinator auto-channel selection v1`):
+- `Coordinator` auto-mode startup now selects channel mask dynamically on network formation when no explicit channel override is provided.
+- selection strategy:
+  - Wi-Fi-aware scoring based on observed AP RSSI and spectral overlap against Zigbee channels.
+  - interoperability bias: preferred channels `11/15/20/25`, additional penalty for channel `26`.
+  - deterministic fallback to preferred order when Wi-Fi scan is unavailable.
+- new `Coordinator` init options:
+  - `auto_channel_mask` (optional candidate mask for auto selection)
+  - `auto_channel_preferred` (ordered channel preference list)
+  - `auto_channel_blacklist` (channels to exclude)
+  - `auto_channel_scan_wifi` (`True` by default)
+  - `auto_channel_scan_fn` (optional custom scan provider for advanced/runtime injection)
+- new runtime helper:
+  - `configure_auto_channel(...) -> dict`
+- runtime telemetry:
+  - `Coordinator.network_info()` now includes `auto_channel` decision snapshot (`strategy`, `selected_channel`, `scores`, `wifi_scan_count`, candidates/preferences/blacklist).
+
+Step 107 additions (`Auto PAN/extPAN persistence from runtime`):
+- in `network_mode="auto"` coordinator does not force `set_pan_id` or `set_extended_pan_id`.
+- after successful commissioning signals (`formation`, `steering`, `device_first_start`, `device_reboot`) high-level coordinator syncs runtime network parameters into `NetworkProfile`.
+- persisted profile now includes stack-generated values:
+  - `profile.pan_id`
+  - `profile.extended_pan_id`
+  - `profile.channel_mask` (runtime-confirmed when available)
+- this sync is independent from auto-discovery toggle; works even with `auto_discovery=False`.
+
+Step 108 additions (`Router/EndDevice auto-join policy v1`):
+- Router/EndDevice high-level constructors now support auto-join policy knobs:
+  - `auto_join_channel_mask` (default: Zigbee channels `11..26` mask)
+  - `join_retry_max`
+  - `join_retry_base_ms`
+  - `join_retry_max_backoff_ms`
+- new API:
+  - `configure_auto_join(auto_join_channel_mask=None, join_retry_max=None, join_retry_base_ms=None, join_retry_max_backoff_ms=None) -> dict`
+- behavior:
+  - in `commissioning_mode="auto"` node applies safe join scan mask without requiring explicit `channel/pan_id/extended_pan_id`.
+  - `join_parent()` now uses bounded steering retry/backoff for transient steering busy/invalid-state conditions.
+  - node commissioning signals sync runtime network profile snapshot (`channel/pan_id/ext_pan`) into `network_profile`.
+- observability:
+  - `status()` / `network_info()` include `auto_join` telemetry block.
+  - node snapshots include `auto_join_policy`.
+
+Step 109 additions (`Guided mode reconnect preference + fallback`):
+- `Coordinator(network_mode="guided")` behavior:
+  - prefers explicit identity values first (`channel/channel_mask/pan_id/extended_pan_id`).
+  - if explicit values are missing, reuses `network_profile` values restored from previous run.
+  - if guided channel is still unknown at `start(form_network=True)`, falls back to dynamic auto-channel selection and records strategy as `guided_*` in `network_info()["auto_channel"]`.
+- `Router/EndDevice(..., commissioning_mode="guided")` behavior:
+  - prefers explicit channel/PAN/extPAN.
+  - if explicit values are missing, reuses restored `network_profile`.
+  - if guided channel is still unknown, falls back to `auto_join_channel_mask`.
+- guided join fallback:
+  - `join_parent()` in guided mode now retries steering with preferred mask, then falls back to full `auto_join_channel_mask` steering retry path when trigger retries fail.
+- runtime profile sync:
+  - startup runtime sync now runs for both `auto` and `guided` modes, so profile reflects active runtime network parameters after commissioning/rejoin.
+
+Step 110 additions (`Conflict handling + self-heal policy`):
+- `Coordinator` self-heal API:
+  - constructor options:
+    - `self_heal_enabled` (default `True`)
+    - `self_heal_retry_max`
+    - `self_heal_retry_base_ms`
+    - `self_heal_retry_max_backoff_ms`
+  - methods:
+    - `configure_self_heal(...) -> dict`
+    - `on_commissioning_event(callback=None) -> self`
+    - `self_heal_stats() -> dict`
+  - behavior:
+    - on `panid_conflict_detected` signal coordinator performs controlled reform retry path (`start(form_network=True)` with bounded backoff).
+    - on steering/formation failure signals (`steering`, `steering_cancelled`, `formation_cancelled` with non-zero status) coordinator performs controlled rejoin steering retrigger path.
+  - observability:
+    - `Coordinator.network_info()["self_heal"]` returns policy + runtime stats.
+    - registry snapshot now persists `self_heal_policy`.
+- `Router/EndDevice` self-heal API:
+  - constructor options:
+    - `self_heal_enabled` (default `True`)
+    - `self_heal_retry_max`
+    - `self_heal_retry_base_ms`
+    - `self_heal_retry_max_backoff_ms`
+  - methods:
+    - `configure_self_heal(...) -> dict`
+    - `on_commissioning_event(callback=None) -> self`
+    - `self_heal_stats() -> dict`
+  - behavior:
+    - on `panid_conflict_detected` and steering failure signals node automatically retriggers steering with bounded retry/backoff.
+    - in `commissioning_mode="guided"` self-heal can switch from preferred/restored mask to `auto_join_channel_mask` as fallback before exhausting retries.
+  - observability:
+  - `status()["self_heal"]` and `network_info()["self_heal"]`.
+  - node snapshots now persist `self_heal_policy`.
+
+Step 111 additions (`Commissioning telemetry stats`):
+- `Coordinator` telemetry API:
+  - `commissioning_stats(reset=False) -> dict`
+  - tracks:
+    - `start_count`, `last_start_ms`
+    - `form_attempts`, `form_success`, `form_failures`
+    - `join_attempts`, `join_success`, `join_failures`
+    - `timeout_events`, `conflict_events`
+    - `last_signal`, `last_status`, `last_event_ms`
+    - `time_to_form_ms`, `time_to_join_ms`
+  - `Coordinator.network_info()` now includes `commissioning`.
+- `Router/EndDevice` telemetry API:
+  - `commissioning_stats(reset=False) -> dict`
+  - same counter model (start/form/join/timeout/conflict/time-to-*).
+  - `status()` and `network_info()` now include `commissioning`.
+- reset behavior:
+  - `commissioning_stats(reset=True)` returns current snapshot and clears counters for next window (useful for HIL/CI batch windows).
+
+Step 86 additions (`Multi-endpoint same-feature API selectors`):
+- `DiscoveredDevice` endpoint and feature selectors:
+  - `endpoints() -> tuple[int, ...]`
+  - `endpoint(endpoint_id) -> DeviceEndpointProxy`
+  - `endpoints_for(cluster_id) -> tuple[int, ...]`
+  - `feature_endpoints(feature_name) -> tuple[int, ...]`
+  - `feature(name, selector=1) -> DeviceEndpointProxy`
+- convenience selectors for duplicate capabilities:
+  - `switch(selector=1)`
+  - `thermostat(selector=1)`
+  - `cover(selector=1)`
+  - `temperature_sensor(selector=1)`
+  - `humidity_sensor(selector=1)`
+  - `pressure_sensor(selector=1)`
+  - `occupancy_sensor(selector=1)`
+  - `ias_zone(selector=1)`
+  - `energy_meter(selector=1)`
+  - `color_light(selector=1)`
+- selector semantics:
+  - selector can be positional index (`1..N`) or concrete endpoint id (`2`, `7`, ...).
+  - `selector=None` is allowed only when exactly one endpoint matches feature; otherwise API raises `ZigbeeError` (ambiguity guard).
+- endpoint-scoped control/read:
+  - `device.switch(2).on()`
+  - `device.switch(1).read.on_off()`
+  - `device.temperature_sensor(2).read.temperature()`
+- state engine changes:
+  - cache now stores endpoint-aware values/metadata (`state_by_endpoint`, `state_meta_by_endpoint`).
+  - attribute callbacks with source endpoint update only matching endpoint slot when multiple endpoints expose the same cluster.
+  - both default and endpoint caches are capped per device (`state_cache_max`) to prevent unbounded growth on noisy/custom-report devices.
+- automation changes:
+  - auto-bind and auto-reporting iterate all mapped endpoints for each capability cluster (not only first endpoint).
+
+Step 62 additions (`Router/EndDevice bootstrap API`):
+- new module:
+  - `uzigbee.node`
+- exported types:
+  - `uzigbee.Router`
+  - `uzigbee.EndDevice`
+- common lifecycle:
+  - `on_signal(callback=None) -> self`
+  - `register() -> self`
+  - `start(join_parent=True, form_network=None) -> self`
+  - `join_parent() -> self` (Router/EndDevice only; explicit steering retrigger)
+  - `status() -> dict`
+  - `components() -> tuple[dict, ...]`
+  - `endpoints() -> tuple[int, ...]`
+  - `describe() -> dict`
+- chainable endpoint builders:
+  - `add_light(...)`, `add_switch(...)`
+  - `add_temperature_sensor(...)`, `add_humidity_sensor(...)`, `add_pressure_sensor(...)`, `add_climate_sensor(...)`
+  - `add_occupancy_sensor(...)`, `add_contact_sensor(...)`, `add_motion_sensor(...)`
+  - `add_power_outlet(...)`, `add_door_lock(...)`, `add_thermostat(...)`, `add_window_covering(...)`, `add_ias_zone(...)`
+- `EndDevice` extras:
+  - constructor args: `sleepy`, `keep_alive_ms`, `poll_interval_ms`
+  - `configure_sleepy(sleepy=None, keep_alive_ms=None, poll_interval_ms=None) -> dict`
+
+Step 63 additions (`EndpointBuilder v1`):
+- `Router` / `EndDevice` declarative builder path:
+  - `add(capability, endpoint_id=None, name=None, **options) -> self`
+  - `add_all(definitions) -> self`
+  - `builder() -> EndpointBuilder`
+  - `capabilities() -> tuple[str, ...]`
+- canonical capabilities:
+  - `light`, `switch`, `temperature_sensor`, `humidity_sensor`, `pressure_sensor`, `climate_sensor`
+  - `occupancy_sensor`, `contact_sensor`, `motion_sensor`, `power_outlet`
+  - `door_lock`, `thermostat`, `window_covering`, `ias_zone`
+- aliases supported in `add(...)`:
+  - `temperature`, `humidity`, `pressure`, `occupancy`, `contact`, `motion`
+  - `outlet`, `plug`, `cover`, `lock`, `ias`
+- option-driven template expansion:
+  - `add("light", dimmable=True)` -> `create_dimmable_light`
+  - `add("light", color=True)` -> `create_color_light`
+  - `add("switch", dimmable=True)` -> `create_dimmable_switch`
+  - `add("power_outlet", with_metering=True)` -> `create_power_outlet(..., with_metering=True)`
+  - `add("ias_zone", zone_type=...)` -> `create_ias_zone(..., zone_type=...)`
+- `add_all(...)` accepted item formats:
+  - string capability, example: `"motion"`
+  - dict capability definition, example: `{"capability": "switch", "endpoint_id": 9, "dimmable": True}`
+  - dict with explicit options bag, example: `{"capability": "ias_zone", "options": {"zone_type": 0x000d}}`
+
+Step 64 additions (`Sensor update pipeline v1`):
+- `Router` / `EndDevice` local sensor state API:
+  - `update(capability, value, endpoint_id=None, timestamp_ms=None) -> dict`
+  - `sensor_state(capability, endpoint_id=None, default=None) -> dict | default`
+  - `sensor_states() -> tuple[dict, ...]`
+- validation and conversion rules:
+  - `temperature`: `-50.0 .. 150.0` C, raw `int(celsius * 100)`
+  - `humidity`: `0.0 .. 100.0` %, raw `int(percent * 100)`
+  - `pressure`: `300.0 .. 1300.0` hPa, raw integer hPa
+  - `occupancy` / `contact` / `motion`: bool or `0/1`, raw `0/1`
+  - `ias_zone`: bool or non-negative int (`status` bitmask), raw preserved
+  - `climate`: dict payload with one or more keys: `temperature`, `humidity`, `pressure`
+- endpoint selection behavior:
+  - when `endpoint_id` is omitted and exactly one endpoint matches capability, it is selected automatically.
+  - when multiple endpoints match, API raises `ValueError` and requires explicit `endpoint_id`.
+- cache behavior:
+  - each update stores `endpoint_id`, `capability`, `value`, `raw_value`, `updated_ms`.
+  - `update("climate", {...})` also updates per-field cache entries (`temperature`, `humidity`, `pressure`) for the same endpoint.
+
+Step 65 additions (`Actuator pipeline v1`):
+- actor facade:
+  - `actor(name=None) -> ActuatorProxy`
+  - actor lookup accepts component `name`, endpoint id (`int` or numeric string), or kind (when unique).
+- `ActuatorProxy` operations:
+  - on/off path: `on()`, `off()`, `toggle()`
+  - level path: `level(level)` (`0..254`)
+  - lock path: `lock()`, `unlock()`
+  - cover path: `cover(percent)`, `cover_lift(percent)`, `cover_tilt(percent)`, `open()`, `close()`, `stop()`
+  - thermostat path: `thermostat_mode(mode)`, `thermostat_heating_setpoint(celsius)`
+- local mirror API:
+  - `actuator_state(actor, field=None, default=None)`
+  - `actuator_states()`
+- idempotent mirror behavior:
+  - repeated command with same effective value keeps cache current but reports `changed=False`.
+  - new values report `changed=True`.
+- runtime status:
+  - `status()["actuator_state_count"]` shows number of mirrored actuator fields.
+
+Step 66 additions (`Auto-reporting policy manager v1`):
+- policy configuration:
+  - `configure_reporting_policy(capability=None, endpoint_id=None, preset=None, overrides=None, dst_short_addr=0x0000, dst_endpoint=1, src_endpoint=None, auto_apply=False) -> tuple[dict, ...]`
+- policy lifecycle:
+  - `reporting_policies() -> tuple[dict, ...]`
+  - `apply_reporting_policy(capability=None, endpoint_id=None) -> tuple[dict, ...]`
+  - `clear_reporting_policy(endpoint_id=None) -> int`
+- default presets by local endpoint kind:
+  - `door_lock`, `thermostat`, `occupancy_sensor`, `contact_sensor`, `motion_sensor`, `ias_zone`
+- overrides:
+  - override entries can be tuples or dicts (`cluster_id`, `attr_id`, `attr_type`, `min_interval`, `max_interval`, `reportable_change`)
+  - overrides replace preset entries by key `(cluster_id, attr_id)` and can add new attributes.
+- apply behavior:
+  - each policy entry is applied through `stack.configure_reporting(...)`.
+  - default `src_endpoint` is local endpoint id of the configured component.
+- runtime status:
+  - `status()["reporting_policy_count"]` reports configured endpoint-level policies.
+
+Step 67 additions (`Auto-binding policy manager v1`):
+- policy configuration:
+  - `configure_binding_policy(capability=None, endpoint_id=None, clusters=None, dst_ieee_addr=None, dst_endpoint=1, req_dst_short_addr=0x0000, src_ieee_addr=None, src_endpoint=None, ias_enroll=True, auto_apply=False) -> tuple[dict, ...]`
+- policy lifecycle:
+  - `binding_policies() -> tuple[dict, ...]`
+  - `apply_binding_policy(capability=None, endpoint_id=None, dst_ieee_addr=None, dst_endpoint=None, req_dst_short_addr=None, src_ieee_addr=None, ias_enroll=None) -> tuple[dict, ...]`
+  - `clear_binding_policy(endpoint_id=None) -> int`
+- default bind clusters per local endpoint kind:
+  - light/switch/outlet (`OnOff` / `Level` / `ElectricalMeasurement`)
+  - thermostat / door_lock / window_covering
+  - occupancy / contact / motion / ias_zone
+  - temperature / humidity / pressure / climate
+- IAS enrollment automation:
+  - when applying policy for `ias_zone` and `ias_enroll=True`, local attribute `IAS CIE Address` is updated from destination IEEE.
+- runtime status:
+  - `status()["binding_policy_count"]` reports configured endpoint-level binding policies.
+
+Step 68 additions (`Sleepy EndDevice profile v1`):
+- EndDevice constructor extensions:
+  - `wake_window_ms`
+  - `checkin_interval_ms`
+  - `low_power_reporting`
+- profile methods:
+  - `configure_sleepy(...)`
+  - `configure_sleepy_profile(...)`
+  - `sleepy_profile() -> dict`
+  - `mark_wake(now_ms=None)`, `mark_poll(now_ms=None)`, `mark_keepalive(now_ms=None)`
+  - `wake_window_active(now_ms=None) -> bool`
+  - `should_poll(now_ms=None) -> bool`
+  - `should_keepalive(now_ms=None) -> bool`
+  - `next_poll_due_ms(now_ms=None) -> int`
+  - `next_keepalive_due_ms(now_ms=None) -> int`
+- low-power reporting defaults:
+  - `EndDevice.configure_reporting_policy(...)` now applies low-power tuning when `sleepy=True` and `low_power_reporting=True` (or explicit `low_power=True`):
+    - `min_interval >= 30`
+    - `max_interval >= 900`
+- status extensions:
+  - `status()` includes sleepy profile fields and scheduler hints (`wake_window_active`, `next_poll_due_ms`, `next_keepalive_due_ms`).
+
+Step 69 additions (`Node graph/state persistence v1`):
+- persistence controls:
+  - `configure_persistence(min_interval_ms=None) -> dict`
+- snapshot API:
+  - `dump_node_state() -> dict`
+  - `restore_node_state(snapshot, merge=False) -> dict`
+- file API:
+  - `save_node_state(path="uzigbee_node_state.json", force=False) -> dict`
+  - `load_node_state(path="uzigbee_node_state.json", merge=False) -> dict`
+- persisted payload includes:
+  - component graph (endpoint plan)
+  - sensor and actuator state caches
+  - reporting and binding policies
+  - EndDevice sleepy profile fields (when applicable)
+- bounded writes:
+  - `save_node_state` respects `min_interval_ms` and returns throttled result unless `force=True`.
+
+Step 70 additions (`Advanced extension path v1`):
+- custom capability templates:
+  - `register_capability(name, create_method, kind=None, aliases=()) -> dict`
+  - `unregister_capability(name) -> int`
+  - `custom_capabilities() -> tuple[dict, ...]`
+- dynamic usage:
+  - registered custom capability can be used through regular `add(...)` / `add_all(...)`.
+- policy hooks:
+  - `register_policy_hook(name, callback) -> int`
+  - `remove_policy_hook(name) -> int`
+  - `policy_hooks() -> tuple[str, ...]`
+- emitted hook events (best effort, non-blocking):
+  - `sensor_update`
+  - `actuator_update`
+  - `reporting_configured`, `reporting_applied`
+  - `binding_configured`, `binding_applied`
+- compatibility:
+  - simple default API remains unchanged; advanced path is optional and additive.
+
+Step 71 additions (`Host test matrix for Router/EndDevice API`):
+- new host matrix suite:
+  - `tests/test_node_matrix_api.py`
+- coverage focus:
+  - builder variants (declarative endpoint composition)
+  - profile conflicts (invalid actor action vs endpoint kind)
+  - state/reporting edge cases
+  - binding edge cases (missing destination IEEE, apply-time override)
+  - sleepy profile behavior transitions
+  - integration roundtrip (snapshot save/load + policy hooks)
+- matrix runner:
+  - `python tools/run_node_host_matrix.py`
+
+Step 72 additions (`HIL matrix for Router/EndDevice API`):
+- device validation scope (`COM3`, ESP32-C6):
+  - `tests/hil_node_router_smoke.py`
+  - `tests/hil_node_enddevice_sleepy_smoke.py`
+  - `tests/hil_node_binding_reporting_smoke.py`
+  - `tests/hil_node_longrun_smoke.py`
+- batch command:
+  - `python tools/hil_runner.py --ports COM3 --tests tests/hil_node_router_smoke.py tests/hil_node_enddevice_sleepy_smoke.py tests/hil_node_binding_reporting_smoke.py tests/hil_node_longrun_smoke.py --retries 3 --timeout 300`
+- observed runtime constraints on current firmware profile:
+  - Router/EndDevice API HIL uses coordinator-initialized stack mode (`auto_register=False`) for local API validation.
+  - reporting apply may raise `ESP_ERR_INVALID_STATE (259)` when device is not in joined operational context.
+
+Step 73 additions (`API 4.6 quickstart + cookbook`):
+- Router quickstart (local node that exposes light + sensor + lock):
+  - `router = uzigbee.Router().add_light(name="kitchen_light", dimmable=True).add_temperature_sensor(name="kitchen_temp").add_door_lock(name="front_lock").start(join_parent=True)`
+  - `router.describe()`
+  - `router.update("temperature", 22.4, endpoint_id=2)`
+  - `router.actor("kitchen_light").on()`
+  - `router.actor("front_lock").lock()`
+- EndDevice quickstart (sleepy sensor profile):
+  - `ed = uzigbee.EndDevice(sleepy=True, poll_interval_ms=2000, keep_alive_ms=8000, wake_window_ms=700, checkin_interval_ms=60000, low_power_reporting=True).add_contact_sensor(name="door_contact").add_motion_sensor(name="hall_motion").start(join_parent=True)`
+  - `ed.sleepy_profile()`
+  - `ed.mark_wake()`
+  - `if ed.should_poll(): ed.mark_poll()`
+  - `if ed.should_keepalive(): ed.mark_keepalive()`
+- Sensor and actuator recipes:
+  - single-endpoint sensor push with cache readback:
+    - `router.update("temperature", 21.9)`
+    - `router.sensor_state("temperature")`
+  - multi-endpoint safety:
+    - omit `endpoint_id` only when capability is unique; otherwise API raises `ValueError` (prevents ambiguous writes).
+  - idempotent actuator mirror:
+    - repeated `router.actor("kitchen_light").on()` keeps mirrored state and reports `changed=False` for duplicates.
+- Advanced reporting cookbook:
+  - configure capability preset and apply immediately:
+    - `router.configure_reporting_policy("thermostat", endpoint_id=9, dst_short_addr=0x0000, auto_apply=True)`
+  - override one attribute in preset:
+    - `router.configure_reporting_policy("contact", endpoint_id=10, overrides=({"cluster_id": uzigbee.CLUSTER_ID_IAS_ZONE, "attr_id": uzigbee.ATTR_IAS_ZONE_STATUS, "attr_type": uzigbee.zcl.DATA_TYPE_16BITMAP, "min_interval": 2, "max_interval": 120, "reportable_change": 1},), auto_apply=True)`
+  - EndDevice low-power defaults:
+    - `ed.configure_reporting_policy("contact", endpoint_id=15)` applies sleepy interval floors when `sleepy=True` and `low_power_reporting=True`.
+- Advanced binding cookbook:
+  - configure + apply bind defaults:
+    - `router.configure_binding_policy("thermostat", endpoint_id=12, dst_ieee_addr="11:22:33:44:55:66:77:88", req_dst_short_addr=0x0000, auto_apply=True)`
+  - apply-time destination override:
+    - `router.apply_binding_policy(endpoint_id=12, dst_ieee_addr="22:33:44:55:66:77:88:99")`
+  - IAS enroll automation:
+    - `router.configure_binding_policy("ias_zone", endpoint_id=14, dst_ieee_addr="88:99:aa:bb:cc:dd:ee:ff", ias_enroll=True, auto_apply=True)`
+- Automation and durability recipe:
+  - `router.register_policy_hook("audit", lambda event, payload: print(event, payload))`
+  - `router.configure_persistence(min_interval_ms=30000)`
+  - `router.save_node_state("uzigbee_node_state.json")`
+  - `router.load_node_state("uzigbee_node_state.json", merge=True)`
+- Operating model:
+  - use high-level `Router`/`EndDevice` as default API surface.
+  - use low-level `stack.*` only for diagnostics or unsupported vendor-specific flows.
+
+Step 74 additions (`Gateway mode baseline`):
+- new module:
+  - `uzigbee.gateway`
+- exported type:
+  - `uzigbee.Gateway`
+- purpose:
+  - transport-agnostic bridge between high-level coordinator API and external transport (HTTP/TCP/WebSocket/serial).
+  - one firmware image remains universal; gateway behavior is selected at runtime via API.
+- lifecycle:
+  - `Gateway(coordinator=None, event_queue_max=64)`
+  - `on_event(callback=None) -> self`
+  - `start(form_network=True) -> self`
+  - `permit_join(duration_s=60, auto_discover=True) -> int`
+- command bridge:
+  - `process_command(command: dict) -> dict`
+  - built-in ops: `ping`, `permit_join`, `list_devices`, `get_device`, `discover`, `process_discovery`, `pending_discovery`, `stats`, `read`, `control`
+  - custom ops: `register_op(name, callback)`, `unregister_op(name)`, `ops()`
+- event bridge:
+  - event sources: stack signals, attribute updates, `device_added`, `device_updated`
+  - queue API: `poll_event(default=None)`, `drain_events(max_items=None)`
+- JSON frame helpers:
+  - `decode_frame(frame: str|bytes) -> dict`
+  - `encode_frame(payload: dict) -> str`
+  - `process_frame(frame: str|bytes) -> str`
+
+High-level API quickstart (`Coordinator`):
+1. start coordinator:
+   - `coordinator = uzigbee.Coordinator(auto_discovery=True).start(form_network=True)`
+2. enable pairing:
+   - `coordinator.permit_join(60)`
+3. wait for discovered node:
+   - `device = coordinator.get_device(0x1234)`
+4. control without endpoint/cluster details:
+   - `device.on()`, `device.off()`, `device.control.level(128)`
+5. read cached/live state:
+   - `device.read.on_off()`, `device.read.temperature()`
+6. when one device has repeated capabilities on many endpoints:
+   - `device.switch(1).on()`
+   - `device.switch(2).off()`
+   - `device.temperature_sensor(2).read.temperature()`
+7. optional persistence:
+   - `coordinator.save_registry()`
+   - `coordinator.load_registry()`
+
+Recommended patterns:
+- keep `auto_discovery=True` in coordinator mode and let registry build itself from join/update signals.
+- use capability wrappers (`device.read.*`, `device.control.*`) as primary interface.
+- for duplicate capabilities, always use selector helpers (`device.switch(2)`, `device.temperature_sensor(1)`) instead of raw endpoint constants in app logic.
+- keep `stale_read_policy="refresh"` when report coverage is partial.
+- tune `state_cache_max` to fleet profile (smaller value when many devices report sparse telemetry).
+- enable `auto_configure_reporting` and `auto_bind` for operational networks.
+- persist graph periodically (`save_registry`) with non-zero `persistence_min_interval_ms`.
+- keep low-level `stack.*` calls for exceptional operations only (diagnostics, custom cluster tooling).
+
+Anti-patterns:
+- hard-coding endpoint IDs for known device models in app code.
+- using `device.read.*` on devices with duplicate same-feature endpoints without selector helper (ambiguous target).
+- writing attributes directly for commands that have dedicated wrappers (`on/off`, `level`, `lock`, `cover`).
+- forcing synchronous discovery on every command path.
+- running with `stale_read_policy="allow"` in logic that requires authoritative state.
+- calling `save_registry(force=True)` in tight loops (flash wear risk).
+
+Migration guide (from low-level API):
+- old:
+  - `stack = uzigbee.ZigbeeStack(); stack.init(...); stack.start(...)`
+- new:
+  - `coordinator = uzigbee.Coordinator(...).start(form_network=True)`
+- old:
+  - app tracks joined nodes manually from `stack.on_signal(...)`
+- new:
+  - use `coordinator.devices`, `coordinator.get_device(short_addr)`, `coordinator.on_device_added(...)`
+- old:
+  - manual endpoint/cluster selection for reads/writes
+- new:
+  - use auto-mapped `device.read.*` and `device.control.*`
+- old:
+  - direct attribute callback routing in app
+- new:
+  - rely on coordinator cache + optional `coordinator.on_attribute(...)` for telemetry hooks
+- compatibility:
+  - low-level `uzigbee.ZigbeeStack` and high-level `uzigbee.devices.*` remain available.
+
+`_uzigbee` (C module):
+- `init(role: int) -> None`
+- `start(*, form_network: bool = False) -> None`
+- `create_endpoint(*, endpoint: int, device_id: int, profile_id: int = 0x0104) -> None`
+- `create_on_off_light(*, endpoint: int = 1) -> None`
+- `create_on_off_switch(*, endpoint: int = 1) -> None`
+- `create_dimmable_switch(*, endpoint: int = 1) -> None`
+- `create_dimmable_light(*, endpoint: int = 1) -> None`
+- `create_color_light(*, endpoint: int = 1) -> None`
+- `create_temperature_sensor(*, endpoint: int = 1) -> None`
+- `create_humidity_sensor(*, endpoint: int = 1) -> None`
+- `create_pressure_sensor(*, endpoint: int = 1) -> None`
+- `create_climate_sensor(*, endpoint: int = 1) -> None`
+- `create_power_outlet(*, endpoint: int = 1, with_metering: bool = False) -> None`
+- `create_window_covering(*, endpoint: int = 1) -> None`
+- `create_ias_zone(*, endpoint: int = 1, zone_type: int = 0x0015) -> None`
+- `create_contact_sensor(*, endpoint: int = 1) -> None`
+- `create_motion_sensor(*, endpoint: int = 1) -> None`
+- `set_basic_identity(*, endpoint: int = 1, manufacturer: str, model: str, date_code: str | None = None, sw_build_id: str | None = None, power_source: int = 1) -> None`
+- `get_basic_identity(*, endpoint: int = 1) -> tuple[str|None, str|None, str|None, str|None, int|None]`
+- `register_device() -> None`
+- `permit_join(*, duration_s: int = 60) -> None`
+- `start_network_steering() -> None`
+- `get_short_addr() -> int`
+- `get_last_joined_short_addr() -> int | None`
+- `get_ieee_addr() -> bytes`
+- `on_signal(callback | None) -> None`
+- `set_signal_callback(callback | None) -> None`
+- `on_attribute(callback | None) -> None`
+- `set_attribute_callback(callback | None) -> None`
+- `configure_reporting(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, cluster_id: int, attr_id: int, attr_type: int, min_interval: int = 0, max_interval: int = 300, reportable_change: int | None = None) -> None`
+- `send_on_off_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, cmd_id: int = 2) -> None`
+- `send_level_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, level: int, transition_ds: int = 0, with_onoff: bool = True) -> None`
+- `send_color_move_to_color_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, color_x: int, color_y: int, transition_ds: int = 0) -> None`
+- `send_color_move_to_color_temperature_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, color_temperature: int, transition_ds: int = 0) -> None`
+- `send_lock_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, lock: bool = True) -> None`
+- `send_group_add_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int) -> None`
+- `send_group_remove_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int) -> None`
+- `send_group_remove_all_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1) -> None`
+- `send_scene_add_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int, scene_id: int, transition_ds: int = 0) -> None`
+- `send_scene_remove_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int, scene_id: int) -> None`
+- `send_scene_remove_all_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int) -> None`
+- `send_scene_recall_cmd(*, src_endpoint: int = 1, dst_short_addr: int, dst_endpoint: int = 1, group_id: int, scene_id: int) -> None`
+- `ota_client_query_interval_set(*, endpoint: int = 1, interval_min: int = 5) -> None`
+- `ota_client_query_image_req(*, server_ep: int = 1, server_addr: int = 0x00) -> None`
+- `ota_client_query_image_stop() -> None`
+- `ota_client_control_supported() -> bool`
+- `set_install_code_policy(*, enabled: bool = False) -> None`
+- `get_install_code_policy() -> bool`
+- `set_network_security_enabled(*, enabled: bool = True) -> None`
+- `is_network_security_enabled() -> bool`
+- `set_network_key(*, key: bytes[16]) -> None`
+- `get_primary_network_key() -> bytes[16]`
+- `switch_network_key(*, key: bytes[16], key_seq_num: int) -> None`
+- `broadcast_network_key(*, key: bytes[16], key_seq_num: int) -> None`
+- `broadcast_network_key_switch(*, key_seq_num: int) -> None`
+- `add_install_code(*, ieee_addr: bytes[8], ic_str: str) -> None`
+- `set_local_install_code(*, ic_str: str) -> None`
+- `remove_install_code(*, ieee_addr: bytes[8]) -> None`
+- `remove_all_install_codes() -> None`
+- `send_bind_cmd(*, src_ieee_addr: bytes, src_endpoint: int = 1, cluster_id: int, dst_ieee_addr: bytes, dst_endpoint: int = 1, req_dst_short_addr: int) -> None`
+- `send_unbind_cmd(*, src_ieee_addr: bytes, src_endpoint: int = 1, cluster_id: int, dst_ieee_addr: bytes, dst_endpoint: int = 1, req_dst_short_addr: int) -> None`
+- `request_binding_table(*, dst_short_addr: int, start_index: int = 0) -> None`
+- `get_binding_table_snapshot() -> tuple[int, int, int, int, tuple]`
+- `request_active_endpoints(*, dst_short_addr: int) -> None`
+- `get_active_endpoints_snapshot() -> tuple[int, int, tuple]`
+- `request_node_descriptor(*, dst_short_addr: int) -> None`
+- `get_node_descriptor_snapshot() -> tuple[int, int, tuple|None]`
+- `request_simple_descriptor(*, dst_short_addr: int, endpoint: int) -> None`
+- `get_simple_descriptor_snapshot() -> tuple[int, int, tuple|None]`
+- `request_power_descriptor(*, dst_short_addr: int) -> None`
+- `get_power_descriptor_snapshot() -> tuple[int, int, tuple|None]`
+- `get_event_stats() -> tuple[int, int, int, int, int, int]`
+  - order: `(enqueued, dropped_queue_full, dropped_schedule_fail, dispatched, max_depth, depth)`
+- `get_heap_stats() -> tuple[int, int, int, int]`
+  - order: `(free_8bit, min_free_8bit, largest_free_8bit, free_internal)`
+- signal constants:
+  - `SIGNAL_SKIP_STARTUP`
+  - `SIGNAL_DEVICE_FIRST_START`
+  - `SIGNAL_DEVICE_REBOOT`
+  - `SIGNAL_STEERING`
+  - `SIGNAL_FORMATION`
+  - `SIGNAL_PERMIT_JOIN_STATUS`
+  - (plus additional `SIGNAL_*` values from `esp_zigbee_zdo_common.h`)
+
+`uzigbee.core.ZigbeeStack`:
+- `init(role)`
+- `start(form_network=False)`
+- `create_endpoint(endpoint_id, device_id, profile_id=PROFILE_ID_ZHA)`
+- `create_on_off_light(endpoint_id=1)`
+- `create_on_off_switch(endpoint_id=1)`
+- `create_dimmable_switch(endpoint_id=1)`
+- `create_dimmable_light(endpoint_id=1)`
+- `create_color_light(endpoint_id=1)`
+- `create_temperature_sensor(endpoint_id=1)`
+- `create_humidity_sensor(endpoint_id=1)`
+- `create_pressure_sensor(endpoint_id=1)`
+- `create_climate_sensor(endpoint_id=1)`
+- `create_power_outlet(endpoint_id=1, with_metering=False)`
+- `create_window_covering(endpoint_id=1)`
+- `create_ias_zone(endpoint_id=1, zone_type=IAS_ZONE_TYPE_CONTACT_SWITCH)`
+- `create_contact_sensor(endpoint_id=1)`
+- `create_motion_sensor(endpoint_id=1)`
+- `set_basic_identity(endpoint_id=1, manufacturer="uzigbee", model="uzb_device", date_code=None, sw_build_id=None, power_source=BASIC_POWER_SOURCE_MAINS_SINGLE_PHASE)`
+- `get_basic_identity(endpoint_id=1) -> dict`
+  - keys: `manufacturer_name`, `model_identifier`, `date_code`, `sw_build_id`, `power_source`
+- `register_device()`
+- `permit_join(duration_s=60)`
+- `get_short_addr() -> int`
+- `get_last_joined_short_addr() -> int | None`
+- `get_ieee_addr() -> bytes`
+- `short_address` (property)
+- `ieee_address` (property)
+- `on_signal(callback=None)`
+- `set_signal_callback(callback=None)`
+- `on_attribute(callback=None)`
+- `set_attribute_callback(callback=None)`
+- `configure_reporting(dst_short_addr, cluster_id, attr_id, attr_type, src_endpoint=1, dst_endpoint=1, min_interval=0, max_interval=300, reportable_change=None)`
+- `send_on_off_cmd(dst_short_addr, dst_endpoint=1, src_endpoint=1, cmd_id=CMD_ON_OFF_TOGGLE)`
+- `send_level_cmd(dst_short_addr, level, dst_endpoint=1, src_endpoint=1, transition_ds=0, with_onoff=True)`
+- `send_color_move_to_color_cmd(dst_short_addr, color_x, color_y, dst_endpoint=1, src_endpoint=1, transition_ds=0)`
+- `send_color_move_to_color_temperature_cmd(dst_short_addr, color_temperature, dst_endpoint=1, src_endpoint=1, transition_ds=0)`
+- `send_lock_cmd(dst_short_addr, lock=True, dst_endpoint=1, src_endpoint=1)`
+- `send_group_add_cmd(dst_short_addr, group_id, dst_endpoint=1, src_endpoint=1)`
+- `send_group_remove_cmd(dst_short_addr, group_id, dst_endpoint=1, src_endpoint=1)`
+- `send_group_remove_all_cmd(dst_short_addr, dst_endpoint=1, src_endpoint=1)`
+- `send_scene_add_cmd(dst_short_addr, group_id, scene_id, dst_endpoint=1, src_endpoint=1, transition_ds=0)`
+- `send_scene_remove_cmd(dst_short_addr, group_id, scene_id, dst_endpoint=1, src_endpoint=1)`
+- `send_scene_remove_all_cmd(dst_short_addr, group_id, dst_endpoint=1, src_endpoint=1)`
+- `send_scene_recall_cmd(dst_short_addr, group_id, scene_id, dst_endpoint=1, src_endpoint=1)`
+- `ota_client_query_interval_set(endpoint_id=1, interval_min=5)`
+- `ota_client_query_image_req(server_ep=1, server_addr=0x00)`
+- `ota_client_query_image_stop()`
+- `ota_client_control_supported() -> bool`
+- `set_install_code_policy(enabled=False)`
+- `get_install_code_policy() -> bool`
+- `set_network_security_enabled(enabled=True)`
+- `is_network_security_enabled() -> bool`
+- `set_network_key(key)`
+- `get_primary_network_key() -> bytes`
+- `switch_network_key(key, key_seq_num)`
+- `broadcast_network_key(key, key_seq_num)`
+- `broadcast_network_key_switch(key_seq_num)`
+- `add_install_code(ieee_addr, ic_str)`
+- `set_local_install_code(ic_str)`
+- `remove_install_code(ieee_addr)`
+- `remove_all_install_codes()`
+- `send_bind_cmd(src_ieee_addr, cluster_id, dst_ieee_addr, req_dst_short_addr, src_endpoint=1, dst_endpoint=1)`
+- `send_unbind_cmd(src_ieee_addr, cluster_id, dst_ieee_addr, req_dst_short_addr, src_endpoint=1, dst_endpoint=1)`
+- `request_binding_table(dst_short_addr, start_index=0)`
+- `get_binding_table_snapshot() -> dict`
+  - keys: `status`, `index`, `total`, `count`, `records`
+- `request_active_endpoints(dst_short_addr)`
+- `get_active_endpoints_snapshot() -> dict`
+  - keys: `status`, `count`, `endpoints`
+- `request_node_descriptor(dst_short_addr)`
+- `get_node_descriptor_snapshot() -> dict`
+  - keys: `status`, `addr`, `node_desc`
+- `request_simple_descriptor(dst_short_addr, endpoint)`
+- `get_simple_descriptor_snapshot() -> dict`
+  - keys: `status`, `addr`, `simple_desc`
+- `request_power_descriptor(dst_short_addr)`
+- `get_power_descriptor_snapshot() -> dict`
+  - keys: `status`, `addr`, `power_desc`
+- `discover_node_descriptors(dst_short_addr, endpoint_ids=None, include_power_desc=True, include_green_power=False, timeout_ms=5000, poll_ms=200, strict=True) -> dict`
+  - keys: `short_addr`, `endpoint_ids`, `active_endpoints`, `node_descriptor`, `simple_descriptors`, `power_descriptor`, `errors`
+- `event_stats() -> dict`
+  - keys: `enqueued`, `dropped_queue_full`, `dropped_schedule_fail`, `dispatched`, `max_depth`, `depth`
+- `heap_stats() -> dict`
+  - keys: `free_8bit`, `min_free_8bit`, `largest_free_8bit`, `free_internal`
+- `signal_name(signal_id) -> str`
+
+Public constants:
+- `PROFILE_ID_ZHA = 0x0104`
+- `DEVICE_ID_ON_OFF_LIGHT = 0x0100`
+- `DEVICE_ID_ON_OFF_SWITCH = 0x0000`
+- `DEVICE_ID_LEVEL_CONTROL_SWITCH = 0x0001`
+- `DEVICE_ID_DIMMER_SWITCH = 0x0104`
+- `DEVICE_ID_SIMPLE_SENSOR = 0x000C`
+- `DEVICE_ID_HUMIDITY_SENSOR = 0x000C`
+- `DEVICE_ID_PRESSURE_SENSOR = 0x000C`
+- `DEVICE_ID_CLIMATE_SENSOR = 0x000C`
+- `DEVICE_ID_MAINS_POWER_OUTLET = 0x0009`
+- `DEVICE_ID_SMART_PLUG = 0x0051`
+- `DEVICE_ID_DOOR_LOCK = 0x000A`
+- `DEVICE_ID_DOOR_LOCK_CONTROLLER = 0x000B`
+- `DEVICE_ID_WINDOW_COVERING = 0x0202`
+- `DEVICE_ID_DIMMABLE_LIGHT = 0x0101`
+- `DEVICE_ID_COLOR_DIMMABLE_LIGHT = 0x0102`
+- `DEVICE_ID_TEMPERATURE_SENSOR = 0x0302`
+- `CLUSTER_ID_BASIC = 0x0000`
+- `CLUSTER_ID_GROUPS = 0x0004`
+- `CLUSTER_ID_ON_OFF = 0x0006`
+- `CLUSTER_ID_LEVEL_CONTROL = 0x0008`
+- `CLUSTER_ID_COLOR_CONTROL = 0x0300`
+- `CLUSTER_ID_DOOR_LOCK = 0x0101`
+- `CLUSTER_ID_WINDOW_COVERING = 0x0102`
+- `CLUSTER_ID_TEMP_MEASUREMENT = 0x0402`
+- `CLUSTER_ID_PRESSURE_MEASUREMENT = 0x0403`
+- `CLUSTER_ID_REL_HUMIDITY_MEASUREMENT = 0x0405`
+- `CLUSTER_ID_OCCUPANCY_SENSING = 0x0406`
+- `CLUSTER_ID_IAS_ZONE = 0x0500`
+- `CLUSTER_ID_ELECTRICAL_MEASUREMENT = 0x0B04`
+- `ATTR_BASIC_MANUFACTURER_NAME = 0x0004`
+- `ATTR_BASIC_MODEL_IDENTIFIER = 0x0005`
+- `ATTR_BASIC_DATE_CODE = 0x0006`
+- `ATTR_BASIC_POWER_SOURCE = 0x0007`
+- `ATTR_BASIC_SW_BUILD_ID = 0x4000`
+- `ATTR_ON_OFF_ON_OFF = 0x0000`
+- `ATTR_LEVEL_CONTROL_CURRENT_LEVEL = 0x0000` (cluster `0x0008`)
+- `ATTR_DOOR_LOCK_LOCK_STATE = 0x0000`
+- `ATTR_WINDOW_COVERING_CURRENT_POSITION_LIFT_PERCENTAGE = 0x0008`
+- `ATTR_WINDOW_COVERING_CURRENT_POSITION_TILT_PERCENTAGE = 0x0009`
+- `ATTR_TEMP_MEASUREMENT_VALUE = 0x0000` (cluster `0x0402`)
+- `ATTR_PRESSURE_MEASUREMENT_VALUE = 0x0000` (cluster `0x0403`)
+- `ATTR_REL_HUMIDITY_MEASUREMENT_VALUE = 0x0000` (cluster `0x0405`)
+- `ATTR_OCCUPANCY_SENSING_OCCUPANCY = 0x0000` (cluster `0x0406`)
+- `ATTR_IAS_ZONE_STATE = 0x0000` (cluster `0x0500`)
+- `ATTR_IAS_ZONE_TYPE = 0x0001` (cluster `0x0500`)
+- `ATTR_IAS_ZONE_STATUS = 0x0002` (cluster `0x0500`)
+- `ATTR_IAS_ZONE_IAS_CIE_ADDRESS = 0x0010` (cluster `0x0500`)
+- `ATTR_IAS_ZONE_ID = 0x0011` (cluster `0x0500`)
+- `ATTR_ELECTRICAL_MEASUREMENT_RMSVOLTAGE = 0x0505` (cluster `0x0B04`)
+- `ATTR_ELECTRICAL_MEASUREMENT_RMSCURRENT = 0x0508` (cluster `0x0B04`)
+- `ATTR_ELECTRICAL_MEASUREMENT_ACTIVE_POWER = 0x050B` (cluster `0x0B04`)
+- `ATTR_COLOR_CONTROL_CURRENT_X = 0x0003`
+- `ATTR_COLOR_CONTROL_CURRENT_Y = 0x0004`
+- `ATTR_COLOR_CONTROL_COLOR_TEMPERATURE = 0x0007`
+- `CMD_ON_OFF_OFF = 0x00`
+- `CMD_ON_OFF_ON = 0x01`
+- `CMD_ON_OFF_TOGGLE = 0x02`
+- `CMD_DOOR_LOCK_LOCK_DOOR = 0x00`
+- `CMD_DOOR_LOCK_UNLOCK_DOOR = 0x01`
+- `CMD_WINDOW_COVERING_UP_OPEN = 0x00`
+- `CMD_WINDOW_COVERING_DOWN_CLOSE = 0x01`
+- `CMD_WINDOW_COVERING_STOP = 0x02`
+- `CMD_WINDOW_COVERING_GO_TO_LIFT_PERCENTAGE = 0x05`
+- `CMD_LEVEL_MOVE_TO_LEVEL = 0x00`
+- `CMD_LEVEL_MOVE_TO_LEVEL_WITH_ONOFF = 0x04`
+- `IAS_ZONE_TYPE_MOTION = 0x000D`
+- `IAS_ZONE_TYPE_CONTACT_SWITCH = 0x0015`
+- `IAS_ZONE_STATUS_ALARM1 = 0x0001`
+- `BASIC_POWER_SOURCE_UNKNOWN = 0x00`
+- `BASIC_POWER_SOURCE_MAINS_SINGLE_PHASE = 0x01`
+- `BASIC_POWER_SOURCE_MAINS_THREE_PHASE = 0x02`
+- `BASIC_POWER_SOURCE_BATTERY = 0x03`
+- `BASIC_POWER_SOURCE_DC_SOURCE = 0x04`
+- `BASIC_POWER_SOURCE_EMERGENCY_MAINS_CONST = 0x05`
+- `BASIC_POWER_SOURCE_EMERGENCY_MAINS_TRANSF = 0x06`
+
+`uzigbee.zcl`:
+- Extended ZCL constants for:
+  - cluster IDs (`CLUSTER_ID_*`) used by lighting, sensors, IAS, thermostat, metering
+  - attribute IDs (`ATTR_BASIC_*`, `ATTR_ON_OFF_*`, `ATTR_LEVEL_CONTROL_*`, `ATTR_COLOR_CONTROL_*`, selected sensor/IAS attrs)
+  - data types (`DATA_TYPE_*`, aligned with `ESP_ZB_ZCL_ATTR_TYPE_*`)
+- Backward-compatible aliases preserved:
+  - `CLUSTER_BASIC`, `CLUSTER_ON_OFF`
+  - `ATTR_ZCL_VERSION`, `ATTR_MANUFACTURER_NAME`, `ATTR_MODEL_IDENTIFIER`, `ATTR_DATE_CODE`, `ATTR_POWER_SOURCE`, `ATTR_SW_BUILD_ID`, `ATTR_ON_OFF`
+- Helpers:
+  - `cluster_name(cluster_id) -> str`
+  - `data_type_name(data_type) -> str`
+  - `data_type_size(data_type) -> int | None`
+  - `is_string_type(data_type) -> bool`
+
+Callback contract:
+- Callback signature: `callback(signal_id: int, status: int)`.
+- Callback execution context: MicroPython scheduler task.
+- Zigbee task behavior: event enqueue only (no Python object allocation).
+- Attribute callback signature:
+  - default legacy: `callback(endpoint: int, cluster_id: int, attr_id: int, value, attr_type: int, status: int)`.
+  - source-aware (when available): `callback(source_short_addr: int, endpoint: int, cluster_id: int, attr_id: int, value, attr_type: int, status: int)`.
+  - compatibility: if callback does not accept source-aware signature, dispatcher falls back to legacy 6-argument call.
+  - `value` is currently scalar-only (`bool`/signed and unsigned 8/16/32-bit), unsupported types are ignored.
+
+`uzigbee.z2m` helpers:
+- `set_identity(stack=None, endpoint_id=1, manufacturer=None, model=None, date_code=None, sw_build_id=None, power_source=None) -> dict`
+- `set_model_id(model, stack=None, endpoint_id=1) -> dict`
+- `set_manufacturer(name, stack=None, endpoint_id=1) -> dict`
+- `get_interview_attrs(stack=None, endpoint_id=1) -> dict`
+- `validate(stack=None, endpoint_id=1) -> dict`
+  - keys: `ok`, `errors`, `warnings`, `attrs`
+
+`uzigbee.devices`:
+- `Light(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_Light", date_code=None, sw_build_id=None, power_source=1)`
+- `Light.provision(register=True) -> self`
+- `Light.validate_interview() -> dict`
+- `Light.get_state() -> bool`
+- `Light.set_state(value, check=False) -> bool`
+- `Light.toggle(check=False) -> bool`
+- `Light.on_change(callback=None) -> self`
+  - callback signature: `callback(state: bool)`
+- `DimmableLight(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_DimmableLight", date_code=None, sw_build_id=None, power_source=1)`
+- `DimmableLight.get_brightness() -> int`
+- `DimmableLight.set_brightness(value, check=False) -> int` (clamped to `0..254`)
+- `DimmableLight.brightness` (property)
+- `DimmableLight.on_brightness_change(callback=None) -> self`
+  - callback signature: `callback(level: int)`
+- `ColorLight(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_ColorLight", date_code=None, sw_build_id=None, power_source=1)`
+- `ColorLight.get_xy() -> tuple[int, int]`
+- `ColorLight.set_xy(x, y, check=False) -> tuple[int, int]` (clamped to `0..65535`)
+- `ColorLight.on_xy_change(callback=None) -> self`
+  - callback signature: `callback((x: int, y: int))`
+- `ColorLight.get_color_temperature() -> int`
+- `ColorLight.set_color_temperature(value, check=False) -> int` (clamped to `153..500`)
+- `ColorLight.color_temperature` (property)
+- `ColorLight.on_color_temperature_change(callback=None) -> self`
+  - callback signature: `callback(mireds: int)`
+- Note: on current ESP Zigbee default color-light config, XY works and color-temperature attribute can be unavailable (`OSError 261`).
+- `Switch(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_Switch", date_code=None, sw_build_id=None, power_source=1)`
+- `Switch.provision(register=True) -> self`
+- `Switch.validate_interview() -> dict`
+- `Switch.send_on(dst_short_addr, dst_endpoint=1) -> None`
+- `Switch.send_off(dst_short_addr, dst_endpoint=1) -> None`
+- `Switch.toggle(dst_short_addr, dst_endpoint=1) -> None`
+- `Switch.add_to_group(dst_short_addr, group_id, dst_endpoint=1) -> int`
+- `Switch.remove_from_group(dst_short_addr, group_id, dst_endpoint=1) -> int`
+- `Switch.clear_groups(dst_short_addr, dst_endpoint=1) -> bool`
+- `DimmableSwitch(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_DimmableSwitch", date_code=None, sw_build_id=None, power_source=1)`
+- `DimmableSwitch.provision(register=True) -> self`
+- `DimmableSwitch.validate_interview() -> dict`
+- `DimmableSwitch.send_on(dst_short_addr, dst_endpoint=1) -> None`
+- `DimmableSwitch.send_off(dst_short_addr, dst_endpoint=1) -> None`
+- `DimmableSwitch.toggle(dst_short_addr, dst_endpoint=1) -> None`
+- `DimmableSwitch.send_level(dst_short_addr, level, dst_endpoint=1, transition_ds=0, with_onoff=True) -> None`
+- `DimmableSwitch.set_brightness(dst_short_addr, level, dst_endpoint=1, transition_ds=0) -> None`
+- `PowerOutlet(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_PowerOutlet", date_code=None, sw_build_id=None, power_source=1, with_metering=False)`
+- `PowerOutlet.provision(register=True) -> self`
+- `PowerOutlet.validate_interview() -> dict`
+- `PowerOutlet.get_state() -> bool`
+- `PowerOutlet.set_state(value, check=False) -> bool`
+- `PowerOutlet.get_power() -> int`
+- `PowerOutlet.set_power(watts, check=False) -> int`
+- `PowerOutlet.power_w` (property)
+- `PowerOutlet.get_voltage() -> int`
+- `PowerOutlet.set_voltage(volts, check=False) -> int`
+- `PowerOutlet.voltage_v` (property)
+- `PowerOutlet.get_current() -> float`
+- `PowerOutlet.set_current(amps, check=False) -> float`
+- `PowerOutlet.current_a` (property)
+- `PowerOutlet.on_measurement_change(callback=None) -> self`
+  - callback signature: `callback({"power_w": int, "voltage_v": int, "current_a": float})`
+- `TemperatureSensor(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_TemperatureSensor", date_code=None, sw_build_id=None, power_source=1)`
+- `TemperatureSensor.provision(register=True) -> self`
+- `TemperatureSensor.validate_interview() -> dict`
+- `TemperatureSensor.get_temperature_raw() -> int` (unit `0.01C`)
+- `TemperatureSensor.get_temperature_c() -> float | None`
+- `TemperatureSensor.temperature_c` (property)
+- `TemperatureSensor.set_temperature_raw(value, check=False) -> int` (clamped to `-32767..32767`)
+- `TemperatureSensor.set_temperature_c(value, check=False) -> int` (input in `C`, stored as `0.01C`)
+- `TemperatureSensor.on_temperature_change(callback=None) -> self`
+  - callback signature: `callback(celsius: float | None)`
+- `HumiditySensor(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_HumiditySensor", date_code=None, sw_build_id=None, power_source=1)`
+- `HumiditySensor.provision(register=True) -> self`
+- `HumiditySensor.validate_interview() -> dict`
+- `HumiditySensor.get_humidity_raw() -> int` (unit `0.01%`)
+- `HumiditySensor.get_humidity_percent() -> float | None`
+- `HumiditySensor.humidity_percent` (property)
+- `HumiditySensor.set_humidity_raw(value, check=False) -> int` (clamped to `0..10000`)
+- `HumiditySensor.set_humidity_percent(value, check=False) -> int` (input in `%`, stored as `0.01%`)
+- `HumiditySensor.on_humidity_change(callback=None) -> self`
+  - callback signature: `callback(percent: float | None)`
+- `PressureSensor(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_PressureSensor", date_code=None, sw_build_id=None, power_source=1)`
+- `PressureSensor.provision(register=True) -> self`
+- `PressureSensor.validate_interview() -> dict`
+- `PressureSensor.get_pressure_raw() -> int` (unit `hPa`)
+- `PressureSensor.get_pressure_hpa() -> float | None`
+- `PressureSensor.pressure_hpa` (property)
+- `PressureSensor.set_pressure_raw(value, check=False) -> int` (clamped to `-32767..32767`)
+- `PressureSensor.set_pressure_hpa(value, check=False) -> int` (input in `hPa`)
+- `PressureSensor.on_pressure_change(callback=None) -> self`
+  - callback signature: `callback(hpa: float | None)`
+- `ClimateSensor(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_ClimateSensor", date_code=None, sw_build_id=None, power_source=1)`
+- `ClimateSensor.provision(register=True) -> self`
+- `ClimateSensor.validate_interview() -> dict`
+- `ClimateSensor.get_temperature_raw() -> int` (unit `0.01C`)
+- `ClimateSensor.get_temperature_c() -> float | None`
+- `ClimateSensor.temperature_c` (property)
+- `ClimateSensor.set_temperature_raw(value, check=False) -> int`
+- `ClimateSensor.set_temperature_c(value, check=False) -> int`
+- `ClimateSensor.get_humidity_raw() -> int` (unit `0.01%`)
+- `ClimateSensor.get_humidity_percent() -> float | None`
+- `ClimateSensor.humidity_percent` (property)
+- `ClimateSensor.set_humidity_raw(value, check=False) -> int`
+- `ClimateSensor.set_humidity_percent(value, check=False) -> int`
+- `ClimateSensor.get_pressure_raw() -> int` (unit `hPa`)
+- `ClimateSensor.get_pressure_hpa() -> float | None`
+- `ClimateSensor.pressure_hpa` (property)
+- `ClimateSensor.set_pressure_raw(value, check=False) -> int`
+- `ClimateSensor.set_pressure_hpa(value, check=False) -> int`
+- `ClimateSensor.on_temperature_change(callback=None) -> self`
+- `ClimateSensor.on_humidity_change(callback=None) -> self`
+- `ClimateSensor.on_pressure_change(callback=None) -> self`
+- `WindowCovering(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_WindowCovering", date_code=None, sw_build_id=None, power_source=1)`
+- `WindowCovering.provision(register=True) -> self`
+- `WindowCovering.validate_interview() -> dict`
+- `WindowCovering.get_lift_percentage() -> int | None`
+- `WindowCovering.set_lift_percentage(value, check=False) -> int`
+- `WindowCovering.get_tilt_percentage() -> int | None`
+- `WindowCovering.set_tilt_percentage(value, check=False) -> int`
+- `WindowCovering.position` (property; alias for lift percentage)
+- `WindowCovering.on_change(callback=None) -> self`
+  - callback signature: `callback({"lift_percentage": int | None, "tilt_percentage": int | None})`
+- `IASZone(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_IASZone", date_code=None, sw_build_id=None, power_source=1, zone_type=0x0015)`
+- `IASZone.provision(register=True) -> self`
+- `IASZone.validate_interview() -> dict`
+- `IASZone.get_zone_status() -> int`
+- `IASZone.set_zone_status(value, check=False) -> int`
+- `IASZone.get_zone_type() -> int`
+- `IASZone.get_alarm() -> bool`
+- `IASZone.set_alarm(active, check=False) -> bool`
+- `IASZone.alarm` (property)
+- `IASZone.on_change(callback=None) -> self`
+  - callback signature: `callback(alarm: bool)`
+- `ContactSensor(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_ContactSensor", date_code=None, sw_build_id=None, power_source=1)`
+- `ContactSensor.get_contact() -> bool`
+- `ContactSensor.set_contact(contact, check=False) -> bool`
+- `ContactSensor.contact` (property)
+- `ContactSensor.on_change(callback=None) -> self`
+  - callback signature: `callback(contact_closed: bool)`
+- `MotionSensor(endpoint_id=1, stack=None, manufacturer="uzigbee", model="uzb_MotionSensor", date_code=None, sw_build_id=None, power_source=1)`
+- `MotionSensor.get_motion() -> bool`
+- `MotionSensor.set_motion(motion, check=False) -> bool`
+- `MotionSensor.motion` (property)
+- `MotionSensor.on_change(callback=None) -> self`
+  - callback signature: `callback(motion_detected: bool)`
+
+Z2M automation and converters:
+- Interview-oriented HIL suite runner:
+  - `python tools/z2m_interview_suite.py --ports COM3 COM5 --retries 4 --timeout 180`
+- External converters package:
+  - `z2m_converters/uzigbee.js`
+  - `z2m_converters/uzigbee_custom_template.js`
+  - `z2m_converters/README.md`

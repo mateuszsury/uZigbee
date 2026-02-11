@@ -1,0 +1,31 @@
+# Python runtime caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local virtual env / IDE
+.venv/
+.idea/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
+# Local run artifacts and diagnostics
+tmp_*
+tools/tmp_*
+*.log
+
+# Build/test outputs
+build/
+dist/
+coverage.xml
+.coverage*
+
+# Third-party dependencies are bootstrapped locally and not tracked.
+third_party/*
+!third_party/README.md
+
+# Local cleanup manifests (generated during maintenance)
+docs/cleanups/cleanup-manifest-*.txt
+docs/cleanups/third-party-trim-*.txt

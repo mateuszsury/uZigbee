@@ -1,0 +1,20 @@
+site_name: uzigbee
+site_description: MicroPython Zigbee library for ESP32-C6
+site_url: https://example.invalid/uzigbee
+repo_name: uzigbee
+docs_dir: docs
+
+theme:
+  name: mkdocs
+
+nav:
+  - Home: index.md
+  - Getting Started: GETTING_STARTED.md
+  - Build: BUILD.md
+  - API: API.md
+  - Examples: EXAMPLES.md
+  - Zigbee2MQTT Guide: Z2M_GUIDE.md
+  - Zigbee2MQTT Tutorials: Z2M_TUTORIALS.md
+  - Home Assistant Integration: HA_INTEGRATION.md
+  - Memory: MEMORY.md
+  - License Notes: LICENSE_NOTES.md

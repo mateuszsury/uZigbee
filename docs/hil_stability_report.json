@@ -1,0 +1,61 @@
+{
+  "completed_cycles": 2,
+  "coord_port": "COM6",
+  "cycles_requested": 2,
+  "entries": [
+    {
+      "compat_drop_count": 0,
+      "cycle": 1,
+      "elapsed_s": 137.502,
+      "rc": 0,
+      "scenario": "overlap",
+      "test_fail_marker": false,
+      "test_pass_marker": true,
+      "timeout_marker": false,
+      "timeout_s": 710,
+      "traceback_marker": false
+    },
+    {
+      "compat_drop_count": 0,
+      "cycle": 1,
+      "elapsed_s": 47.582,
+      "rc": 0,
+      "scenario": "color",
+      "test_fail_marker": false,
+      "test_pass_marker": true,
+      "timeout_marker": false,
+      "timeout_s": 410,
+      "traceback_marker": false
+    },
+    {
+      "compat_drop_count": 0,
+      "cycle": 2,
+      "elapsed_s": 137.377,
+      "rc": 0,
+      "scenario": "overlap",
+      "test_fail_marker": false,
+      "test_pass_marker": true,
+      "timeout_marker": false,
+      "timeout_s": 710,
+      "traceback_marker": false
+    },
+    {
+      "compat_drop_count": 0,
+      "cycle": 2,
+      "elapsed_s": 38.425,
+      "rc": 0,
+      "scenario": "color",
+      "test_fail_marker": false,
+      "test_pass_marker": true,
+      "timeout_marker": false,
+      "timeout_s": 410,
+      "traceback_marker": false
+    }
+  ],
+  "overall_pass": true,
+  "router_port": "COM3",
+  "skip_color": false,
+  "strict_api": true,
+  "timestamp_utc": "2026-02-11T18:17:30.651252+00:00",
+  "total_elapsed_s": 377.953
+}

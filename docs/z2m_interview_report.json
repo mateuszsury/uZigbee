@@ -1,0 +1,201 @@
+{
+  "timestamp_utc": "2026-02-10T07:34:04.445350+00:00",
+  "ports": [
+    "COM3"
+  ],
+  "retries": 3,
+  "timeout": 180,
+  "skip_hil": false,
+  "converter": "C:\\Users\\thete\\OneDrive\\Dokumenty\\PyCharm\\MicroPythonZigbee\\z2m_converters\\uzigbee.js",
+  "missing_tests": [],
+  "missing_models": [],
+  "hil_exit_code": 0,
+  "cases": [
+    {
+      "name": "Light",
+      "model": "uzb_Light",
+      "dashboard_expose": "light",
+      "hil_test": "tests/hil_light_device_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "DimmableLight",
+      "model": "uzb_DimmableLight",
+      "dashboard_expose": "light",
+      "hil_test": "tests/hil_dimmable_light_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "ColorLight",
+      "model": "uzb_ColorLight",
+      "dashboard_expose": "light",
+      "hil_test": "tests/hil_color_light_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "Switch",
+      "model": "uzb_Switch",
+      "dashboard_expose": "action",
+      "hil_test": "tests/hil_switch_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "DimmableSwitch",
+      "model": "uzb_DimmableSwitch",
+      "dashboard_expose": "action",
+      "hil_test": "tests/hil_dimmable_switch_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "PowerOutlet",
+      "model": "uzb_PowerOutlet",
+      "dashboard_expose": "switch",
+      "hil_test": "tests/hil_power_outlet_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "TemperatureSensor",
+      "model": "uzb_TemperatureSensor",
+      "dashboard_expose": "sensor",
+      "hil_test": "tests/hil_temperature_sensor_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "HumiditySensor",
+      "model": "uzb_HumiditySensor",
+      "dashboard_expose": "sensor",
+      "hil_test": "tests/hil_humidity_sensor_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "PressureSensor",
+      "model": "uzb_PressureSensor",
+      "dashboard_expose": "sensor",
+      "hil_test": "tests/hil_pressure_sensor_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "ClimateSensor",
+      "model": "uzb_ClimateSensor",
+      "dashboard_expose": "sensor",
+      "hil_test": "tests/hil_climate_sensor_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "DoorLock",
+      "model": "uzb_DoorLock",
+      "dashboard_expose": "lock",
+      "hil_test": "tests/hil_door_lock_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "DoorLockController",
+      "model": "uzb_DoorLockController",
+      "dashboard_expose": "action",
+      "hil_test": "tests/hil_door_lock_controller_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "Thermostat",
+      "model": "uzb_Thermostat",
+      "dashboard_expose": "climate",
+      "hil_test": "tests/hil_thermostat_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "OccupancySensor",
+      "model": "uzb_OccupancySensor",
+      "dashboard_expose": "binary_sensor",
+      "hil_test": "tests/hil_occupancy_sensor_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "IASZone",
+      "model": "uzb_IASZone",
+      "dashboard_expose": "binary_sensor",
+      "hil_test": "tests/hil_ias_zone_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "ContactSensor",
+      "model": "uzb_ContactSensor",
+      "dashboard_expose": "binary_sensor",
+      "hil_test": "tests/hil_contact_sensor_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "MotionSensor",
+      "model": "uzb_MotionSensor",
+      "dashboard_expose": "binary_sensor",
+      "hil_test": "tests/hil_motion_sensor_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    },
+    {
+      "name": "WindowCovering",
+      "model": "uzb_WindowCovering",
+      "dashboard_expose": "cover",
+      "hil_test": "tests/hil_window_covering_smoke.py",
+      "read_attr_ok": true,
+      "reports_ok": true,
+      "converter_expected": true
+    }
+  ],
+  "hil_tests": [
+    "tests/hil_basic_identity_smoke.py",
+    "tests/hil_z2m_validate_smoke.py",
+    "tests/hil_z2m_setters_smoke.py",
+    "tests/hil_zigbee_bridge_addr_smoke.py",
+    "tests/hil_light_device_smoke.py",
+    "tests/hil_dimmable_light_smoke.py",
+    "tests/hil_color_light_smoke.py",
+    "tests/hil_switch_smoke.py",
+    "tests/hil_dimmable_switch_smoke.py",
+    "tests/hil_power_outlet_smoke.py",
+    "tests/hil_temperature_sensor_smoke.py",
+    "tests/hil_humidity_sensor_smoke.py",
+    "tests/hil_pressure_sensor_smoke.py",
+    "tests/hil_climate_sensor_smoke.py",
+    "tests/hil_door_lock_smoke.py",
+    "tests/hil_door_lock_controller_smoke.py",
+    "tests/hil_thermostat_smoke.py",
+    "tests/hil_occupancy_sensor_smoke.py",
+    "tests/hil_ias_zone_smoke.py",
+    "tests/hil_contact_sensor_smoke.py",
+    "tests/hil_motion_sensor_smoke.py",
+    "tests/hil_window_covering_smoke.py"
+  ]
+}
