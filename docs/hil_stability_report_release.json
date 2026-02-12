@@ -1,0 +1,37 @@
+{
+  "completed_cycles": 1,
+  "coord_port": "COM6",
+  "cycles_requested": 1,
+  "entries": [
+    {
+      "compat_drop_count": 0,
+      "cycle": 1,
+      "elapsed_s": 136.404,
+      "rc": 0,
+      "scenario": "overlap",
+      "test_fail_marker": false,
+      "test_pass_marker": true,
+      "timeout_marker": false,
+      "timeout_s": 790,
+      "traceback_marker": false
+    },
+    {
+      "compat_drop_count": 0,
+      "cycle": 1,
+      "elapsed_s": 37.053,
+      "rc": 0,
+      "scenario": "color",
+      "test_fail_marker": false,
+      "test_pass_marker": true,
+      "timeout_marker": false,
+      "timeout_s": 510,
+      "traceback_marker": false
+    }
+  ],
+  "overall_pass": true,
+  "router_port": "COM3",
+  "skip_color": false,
+  "strict_api": true,
+  "timestamp_utc": "2026-02-12T00:15:36.227344+00:00",
+  "total_elapsed_s": 181.953
+}
