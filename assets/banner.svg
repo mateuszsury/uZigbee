@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D1117"/>
+      <stop offset="100%" stop-color="#161B22"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+    <linearGradient id="meshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#21262D" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#21262D" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="200" fill="url(#bg)" rx="8"/>
+
+  <!-- Mesh network pattern -->
+  <g stroke="#21262D" stroke-width="0.8" fill="none" opacity="0.5">
+    <!-- Zigzag mesh lines -->
+    <path d="M50,30 L120,70 L50,110 L120,150 L50,190"/>
+    <path d="M120,70 L200,30 L280,70 L200,110"/>
+    <path d="M120,150 L200,110 L280,150 L200,190"/>
+    <path d="M680,30 L750,70 L680,110 L750,150 L680,190"/>
+    <path d="M600,30 L680,70 L600,110 L680,150"/>
+    <path d="M600,70 L530,30 L600,110"/>
+    <path d="M750,70 L680,30"/>
+    <path d="M530,150 L600,190"/>
+    <path d="M680,70 L600,110 L680,150"/>
+  </g>
+
+  <!-- Mesh nodes -->
+  <g fill="#30363D" opacity="0.5">
+    <circle cx="50" cy="30" r="3"/><circle cx="120" cy="70" r="3"/>
+    <circle cx="50" cy="110" r="3"/><circle cx="120" cy="150" r="3"/>
+    <circle cx="50" cy="190" r="3"/><circle cx="200" cy="30" r="3"/>
+    <circle cx="280" cy="70" r="3"/><circle cx="200" cy="110" r="3"/>
+    <circle cx="280" cy="150" r="3"/><circle cx="200" cy="190" r="3"/>
+    <circle cx="680" cy="30" r="3"/><circle cx="750" cy="70" r="3"/>
+    <circle cx="680" cy="110" r="3"/><circle cx="750" cy="150" r="3"/>
+    <circle cx="680" cy="190" r="3"/><circle cx="600" cy="30" r="3"/>
+    <circle cx="530" cy="30" r="3"/><circle cx="600" cy="110" r="3"/>
+    <circle cx="530" cy="150" r="3"/><circle cx="600" cy="190" r="3"/>
+  </g>
+
+  <!-- Active mesh nodes with red glow -->
+  <g>
+    <circle cx="120" cy="70" r="4" fill="#DC2626" opacity="0.8"/>
+    <circle cx="680" cy="110" r="4" fill="#DC2626" opacity="0.8"/>
+    <circle cx="200" cy="110" r="4" fill="#F87171" opacity="0.6"/>
+    <circle cx="600" cy="110" r="4" fill="#F87171" opacity="0.6"/>
+  </g>
+
+  <!-- Accent line -->
+  <rect x="310" y="165" width="180" height="2" rx="1" fill="url(#accent)" opacity="0.8"/>
+
+  <!-- "u" prefix -->
+  <text x="325" y="105" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="64" font-weight="300" fill="#9CA3AF" letter-spacing="-2">u</text>
+
+  <!-- "Zigbee" main text -->
+  <text x="370" y="105" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="64" font-weight="700" fill="#E6EDF3" letter-spacing="-1">Zigbee</text>
+
+  <!-- Zigzag accent on Z -->
+  <path d="M374,58 L390,58 L374,95 L390,95" stroke="#DC2626" stroke-width="3" fill="none" stroke-linecap="round" opacity="0"/>
+
+  <!-- Tagline -->
+  <text x="400" y="140" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="16" fill="#9CA3AF" text-anchor="middle" letter-spacing="2">MicroPython Zigbee for ESP32-C6</text>
+
+  <!-- Bottom accent dots -->
+  <g fill="#DC2626" opacity="0.4">
+    <circle cx="365" cy="180" r="2"/>
+    <circle cx="385" cy="180" r="2"/>
+    <circle cx="405" cy="180" r="2"/>
+    <circle cx="425" cy="180" r="2"/>
+    <circle cx="445" cy="180" r="2"/>
+  </g>
+</svg>

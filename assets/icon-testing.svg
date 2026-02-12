@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#161B22"/>
+  <!-- Test tube / beaker -->
+  <path d="M24,14 L24,36 L20,48 C18,52 22,56 32,56 C42,56 46,52 44,48 L40,36 L40,14" stroke="#9CA3AF" stroke-width="2" fill="none"/>
+  <!-- Liquid -->
+  <path d="M24,36 L20,48 C18,52 22,56 32,56 C42,56 46,52 44,48 L40,36 Z" fill="url(#tg)" opacity="0.6"/>
+  <!-- Top rim -->
+  <line x1="20" y1="14" x2="44" y2="14" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
+  <!-- Checkmark -->
+  <path d="M26,42 L30,47 L38,38" stroke="#E6EDF3" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

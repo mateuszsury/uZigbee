@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="og" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#161B22"/>
+  <!-- Cloud -->
+  <path d="M18,34 C14,34 12,30 14,26 C16,22 20,20 24,22 C26,16 34,14 38,18 C42,14 50,16 50,22 C54,22 56,26 54,30 C56,34 52,36 48,36 L18,36 Z" fill="#21262D" stroke="#30363D" stroke-width="1"/>
+  <!-- Download arrow -->
+  <line x1="32" y1="28" x2="32" y2="48" stroke="url(#og)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M24,42 L32,52 L40,42" stroke="url(#og)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Refresh arc -->
+  <path d="M22,46 C18,50 20,56 28,56 L36,56 C44,56 46,50 42,46" stroke="#9CA3AF" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+</svg>

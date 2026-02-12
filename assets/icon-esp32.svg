@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="eg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#161B22"/>
+  <!-- MCU chip body -->
+  <rect x="16" y="16" width="32" height="32" rx="4" fill="#21262D" stroke="#30363D" stroke-width="1"/>
+  <!-- Die -->
+  <rect x="24" y="24" width="16" height="16" rx="2" fill="url(#eg)"/>
+  <!-- Pins top -->
+  <rect x="22" y="10" width="3" height="8" rx="1" fill="#9CA3AF"/>
+  <rect x="30" y="10" width="3" height="8" rx="1" fill="#9CA3AF"/>
+  <rect x="38" y="10" width="3" height="8" rx="1" fill="#9CA3AF"/>
+  <!-- Pins bottom -->
+  <rect x="22" y="46" width="3" height="8" rx="1" fill="#9CA3AF"/>
+  <rect x="30" y="46" width="3" height="8" rx="1" fill="#9CA3AF"/>
+  <rect x="38" y="46" width="3" height="8" rx="1" fill="#9CA3AF"/>
+  <!-- Pins left -->
+  <rect x="10" y="22" width="8" height="3" rx="1" fill="#9CA3AF"/>
+  <rect x="10" y="30" width="8" height="3" rx="1" fill="#9CA3AF"/>
+  <rect x="10" y="38" width="8" height="3" rx="1" fill="#9CA3AF"/>
+  <!-- Pins right -->
+  <rect x="46" y="22" width="8" height="3" rx="1" fill="#9CA3AF"/>
+  <rect x="46" y="30" width="8" height="3" rx="1" fill="#9CA3AF"/>
+  <rect x="46" y="38" width="8" height="3" rx="1" fill="#9CA3AF"/>
+  <!-- C6 label -->
+  <text x="32" y="36" font-family="monospace" font-size="8" fill="#E6EDF3" text-anchor="middle" font-weight="bold">C6</text>
+</svg>

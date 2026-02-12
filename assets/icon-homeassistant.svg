@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#161B22"/>
+  <!-- House roof -->
+  <path d="M32,12 L12,30 L18,30 L18,50 L46,50 L46,30 L52,30 Z" fill="#21262D" stroke="url(#hg)" stroke-width="2"/>
+  <!-- Door -->
+  <rect x="26" y="36" width="12" height="14" rx="2" fill="url(#hg)"/>
+  <!-- Window left -->
+  <rect x="20" y="32" width="6" height="6" rx="1" fill="#30363D"/>
+  <!-- Window right -->
+  <rect x="38" y="32" width="6" height="6" rx="1" fill="#30363D"/>
+  <!-- Wireless signal arcs -->
+  <path d="M32,18 C36,18 38,20 38,22" stroke="#F87171" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path d="M32,18 C40,18 43,22 43,26" stroke="#F87171" stroke-width="1.5" fill="none" opacity="0.4"/>
+</svg>

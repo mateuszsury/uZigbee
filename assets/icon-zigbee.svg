@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="zg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#161B22"/>
+  <!-- Zigbee mesh: 3 connected nodes -->
+  <circle cx="32" cy="16" r="5" fill="url(#zg)"/>
+  <circle cx="18" cy="44" r="5" fill="url(#zg)"/>
+  <circle cx="46" cy="44" r="5" fill="url(#zg)"/>
+  <line x1="32" y1="21" x2="18" y2="39" stroke="#9CA3AF" stroke-width="2"/>
+  <line x1="32" y1="21" x2="46" y2="39" stroke="#9CA3AF" stroke-width="2"/>
+  <line x1="18" y1="44" x2="46" y2="44" stroke="#9CA3AF" stroke-width="2"/>
+  <!-- Small outer nodes -->
+  <circle cx="10" cy="28" r="3" fill="#30363D"/>
+  <circle cx="54" cy="28" r="3" fill="#30363D"/>
+  <circle cx="32" cy="54" r="3" fill="#30363D"/>
+  <line x1="18" y1="44" x2="10" y2="28" stroke="#30363D" stroke-width="1"/>
+  <line x1="46" y1="44" x2="54" y2="28" stroke="#30363D" stroke-width="1"/>
+  <line x1="18" y1="44" x2="32" y2="54" stroke="#30363D" stroke-width="1"/>
+  <line x1="46" y1="44" x2="32" y2="54" stroke="#30363D" stroke-width="1"/>
+</svg>

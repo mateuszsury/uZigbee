@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="mg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#161B22"/>
+  <!-- Snake body (simplified S-curve) -->
+  <path d="M20,14 C20,14 44,14 44,24 C44,34 20,30 20,40 C20,50 44,50 44,50" stroke="url(#mg)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Snake head -->
+  <circle cx="44" cy="50" r="4" fill="#DC2626"/>
+  <!-- Snake eye -->
+  <circle cx="45.5" cy="48.5" r="1.5" fill="#E6EDF3"/>
+  <!-- Code brackets -->
+  <text x="11" y="58" font-family="monospace" font-size="12" fill="#9CA3AF">&gt;&gt;</text>
+</svg>
