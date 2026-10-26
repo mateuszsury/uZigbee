@@ -216,5 +216,8 @@ Project source code is licensed under the [MIT License](LICENSE).
 The ESP-IDF 5.3.2 / MicroPython 1.27 firmware disables `machine.I2CTarget` because
 that upstream driver uses newer ESP-IDF slave callbacks. I2C controller support
 and Zigbee APIs remain enabled. Bootstrap applies this board compatibility
-setting without replacing the upstream board configuration. CI checks host APIs
+setting without replacing the upstream board configuration. The C6 timer also
+uses IDF 5.3's direct PLL clock enable path, retaining the upstream timer logic;
+the later generic clock-source-enable API is omitted for this pinned target.
+CI checks host APIs
 and builds firmware; hardware-in-the-loop reports remain separate evidence.

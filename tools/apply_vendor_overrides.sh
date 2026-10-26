@@ -12,6 +12,28 @@ if [[ ! -d "${SRC_ROOT}" ]]; then
   exit 1
 fi
 
+# IDF 5.3's GPTimer driver enables the C6 default PLL clock directly through
+# timer_ll_enable_clock; the generic source-enable API was introduced later.
+# Keep upstream timer behavior for all other targets/toolchain versions.
+python3 - "${TP_ROOT}/micropython-esp32/ports/esp32/machine_timer.c" <<'PY'
+from pathlib import Path
+import sys
+
+source = Path(sys.argv[1])
+if source.exists():
+    text = source.read_text()
+    marker = 'UZIGBEE_IDF53_TIMER_COMPAT'
+    if marker not in text:
+        call = '    esp_clk_tree_enable_src(TIMER_CLK_SRC, true);'
+        if text.count(call) != 1:
+            raise SystemExit('Unexpected upstream timer source; review the IDF compatibility patch')
+        replacement = '''    // UZIGBEE_IDF53_TIMER_COMPAT: C6 PLL clock uses timer_ll_enable_clock below.
+    #if !(CONFIG_IDF_TARGET_ESP32C6 && ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 4, 0))
+    esp_clk_tree_enable_src(TIMER_CLK_SRC, true);
+    #endif'''
+        source.write_text(text.replace(call, replacement))
+PY
+
 copy_file() {
   local src="$1"
   local dst="$2"
