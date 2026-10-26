@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
-      IDF_TOOLS_PATH: ${{ runner.temp }}/uzigbee-idf-tools
+      IDF_TOOLS_PATH: /tmp/uzigbee-idf-tools
       BUILD_DIR_NAME: build-ESP32_GENERIC_C6-uzigbee-ci
     steps:
       - name: Checkout
