@@ -16,9 +16,16 @@ def test_vendor_board_patch_preserves_upstream_and_is_idempotent():
         header.parent.mkdir(parents=True)
         original = '#define MICROPY_HW_BOARD_NAME "ESP32C6 module"\n'
         header.write_text(original)
+        timer = header.parents[2] / 'machine_timer.c'
+        timer.write_text('// Upstream license remains intact\n    esp_clk_tree_enable_src(TIMER_CLK_SRC, true);\n    timer_ll_enable_clock(dev, id, true);\n')
         for _ in range(2):
             subprocess.run(['bash', str(root / 'tools/apply_vendor_overrides.sh')], check=True, capture_output=True)
         text = header.read_text()
         assert text.startswith(original)
         assert text.count('UZIGBEE_IDF53_I2C_TARGET_COMPAT') == 1
         assert '#define MICROPY_PY_MACHINE_I2C_TARGET (0)' in text
+        patched = timer.read_text()
+        assert patched.startswith('// Upstream license remains intact\n')
+        assert patched.count('UZIGBEE_IDF53_TIMER_COMPAT') == 1
+        assert 'CONFIG_IDF_TARGET_ESP32C6 && ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 4, 0)' in patched
+        assert 'timer_ll_enable_clock(dev, id, true);' in patched
