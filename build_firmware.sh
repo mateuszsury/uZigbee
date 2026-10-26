@@ -312,13 +312,13 @@ if [[ "$RUN_CLEAN" -eq 1 ]]; then
 fi
 
 log "Build start: profile=$PROFILE board=$BOARD build=$BUILD jobs=$JOBS submodules=$RUN_SUBMODULES mpy-cross=$RUN_MPYCROSS_MODE"
+export UZIGBEE_SDKCONFIG_DEFAULTS="$SDKCONFIG_DEFAULTS"
 make -C "$MICROPY_DIR/ports/esp32" \
   -j "$JOBS" \
   BOARD="$BOARD" \
   BUILD="$BUILD" \
   USER_C_MODULES="$USER_C_MODULES" \
   FROZEN_MANIFEST="$FROZEN_MANIFEST" \
-  SDKCONFIG_DEFAULTS="$SDKCONFIG_DEFAULTS" \
   "${MAKE_EXTRA_ARGS[@]}"
 
 APP_BIN="$BUILD_ROOT/micropython.bin"
