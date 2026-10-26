@@ -10,16 +10,11 @@ fi
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# Guard against Windows HOME being injected into WSL.
-if [[ "${HOME:-}" != /home/* ]]; then
-  export HOME="/home/$(whoami)"
-fi
-
 # Repo-local ESP-IDF (pinned v5.3.2)
 export IDF_PATH="${REPO_DIR}/third_party/esp-idf"
 
 # Dedicated tools cache to avoid conflicts with other ESP-IDF users.
-export IDF_TOOLS_PATH="${HOME}/.espressif-uzigbee"
+export IDF_TOOLS_PATH="${IDF_TOOLS_PATH:-${HOME}/.cache/uzigbee/espressif}"
 
 if [ ! -f "${IDF_PATH}/export.sh" ]; then
   echo "Missing ESP-IDF at ${IDF_PATH}" >&2

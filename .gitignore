@@ -29,3 +29,7 @@ third_party/*
 # Local cleanup manifests (generated during maintenance)
 docs/cleanups/cleanup-manifest-*.txt
 docs/cleanups/third-party-trim-*.txt
+
+# Generated development files
+.ruff_cache/
+*.egg-info/

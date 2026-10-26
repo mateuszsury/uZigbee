@@ -2,20 +2,39 @@ name: Build Firmware Artifacts
 
 on:
   workflow_dispatch:
+  pull_request:
   push:
     paths:
       - "build_firmware.sh"
       - "tools/wsl-env.sh"
+      - "tools/bootstrap_third_party.sh"
+      - "tools/apply_vendor_overrides.sh"
+      - "tests/**"
       - "tools/package_firmware_artifacts.sh"
       - "firmware/**"
       - "c_module/**"
       - "python/uzigbee/**"
       - ".github/workflows/firmware-artifacts.yml"
 
+permissions:
+  contents: read
+
 jobs:
+  host-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "pytest>=8,<10"
+      - run: python -m pytest tests/test_*.py -q
+
   build-esp32c6:
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     env:
+      IDF_TOOLS_PATH: ${{ runner.temp }}/uzigbee-idf-tools
       BUILD_DIR_NAME: build-ESP32_GENERIC_C6-uzigbee-ci
     steps:
       - name: Checkout
@@ -43,6 +62,12 @@ jobs:
             gperf \
             python3-venv
 
+      - name: Bootstrap pinned sources and tools
+        run: |
+          bash tools/bootstrap_third_party.sh
+          git -C third_party/esp-idf submodule update --init --recursive --depth 1
+          bash third_party/esp-idf/install.sh esp32c6
+
       - name: Build Firmware
         shell: bash
         run: |
@@ -59,7 +84,7 @@ jobs:
           set -euo pipefail
           BUILD_PATH="third_party/micropython-esp32/ports/esp32/${BUILD_DIR_NAME}"
           bash tools/package_firmware_artifacts.sh "${BUILD_PATH}" "dist/firmware"
-          sha256sum dist/firmware/* > dist/firmware/SHA256SUMS.txt
+          (cd dist/firmware && find . -maxdepth 1 -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum) > dist/firmware/SHA256SUMS.txt
 
       - name: Upload Firmware Artifacts
         uses: actions/upload-artifact@v4
