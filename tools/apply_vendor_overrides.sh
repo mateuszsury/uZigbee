@@ -33,3 +33,17 @@ while IFS= read -r -d '' src_file; do
       ;;
   esac
 done < <(find "${SRC_ROOT}" -type f -print0)
+
+# MicroPython 1.27 enables I2C target on C6 by default, but its target driver
+# requires newer ESP-IDF slave callbacks than the pinned v5.3.2 provides.
+# Preserve the upstream board configuration and disable only that unsupported API.
+BOARD_HEADER="${TP_ROOT}/micropython-esp32/ports/esp32/boards/ESP32_GENERIC_C6/mpconfigboard.h"
+if [[ -f "${BOARD_HEADER}" ]] && ! grep -q 'UZIGBEE_IDF53_I2C_TARGET_COMPAT' "${BOARD_HEADER}"; then
+  cat >> "${BOARD_HEADER}" <<'EOF'
+
+// UZIGBEE_IDF53_I2C_TARGET_COMPAT: ESP-IDF v5.3.2 lacks the v2 target callbacks.
+#ifndef MICROPY_PY_MACHINE_I2C_TARGET
+#define MICROPY_PY_MACHINE_I2C_TARGET (0)
+#endif
+EOF
+fi
