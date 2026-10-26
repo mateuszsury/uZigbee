@@ -2,7 +2,7 @@
   <img src="assets/banner.svg" alt="uZigbee" width="800">
 
   <p><strong>MicroPython Zigbee library for ESP32-C6</strong></p>
-  <p>Built on ESP-Zigbee-SDK (ZBOSS) · Production-ready · RAM-optimized</p>
+  <p>Built on ESP-Zigbee-SDK (ZBOSS) · Host-tested APIs · RAM-optimized</p>
 
   <br>
 
@@ -210,3 +210,11 @@ Project source code is licensed under the [MIT License](LICENSE).
   <br><br>
   <sub>Built with ESP-Zigbee-SDK · MicroPython · ESP-IDF</sub>
 </div>
+
+### Pinned toolchain boundary
+
+The ESP-IDF 5.3.2 / MicroPython 1.27 firmware disables `machine.I2CTarget` because
+that upstream driver uses newer ESP-IDF slave callbacks. I2C controller support
+and Zigbee APIs remain enabled. Bootstrap applies this board compatibility
+setting without replacing the upstream board configuration. CI checks host APIs
+and builds firmware; hardware-in-the-loop reports remain separate evidence.
