@@ -1,3 +1,5 @@
+# uZigbee — MicroPython Zigbee for ESP32-C6
+
 <div align="center">
   <img src="assets/banner.svg" alt="uZigbee" width="800">
 
@@ -18,6 +20,14 @@
 </div>
 
 ---
+
+## Project overview
+
+MicroPython Zigbee firmware and device APIs for ESP32-C6, built on ESP-IDF and ZBOSS.
+
+![uZigbee — Callbacks cross through the event queue into the MicroPython scheduler. Host/build evidence is separate from HIL and interoperability results.](docs/assets/presentation/overview.svg)
+
+Callbacks cross through the event queue into the MicroPython scheduler. Host/build evidence is separate from HIL and interoperability results.
 
 ## What is uZigbee?
 
